@@ -85,53 +85,29 @@ code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
-<style>
-  div.csl-bib-body { }
-  div.csl-entry {
-    clear: both;
-    }
-  .hanging div.csl-entry {
-    margin-left:2em;
-    text-indent:-2em;
-  }
-  div.csl-left-margin {
-    min-width:2em;
-    float:left;
-  }
-  div.csl-right-inline {
-    margin-left:2em;
-    padding-left:1em;
-  }
-  div.csl-indent {
-    margin-left: 2em;
-  }
-</style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Agent-Based Modeling: The Schelling Model of Segregation</title>
+  <title>Agent-Based Modeling: Neighborhood Relations</title>
 
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Agent-Based Modeling: The Schelling Model of Segregation"/>
+  <meta property="og:title" content="Agent-Based Modeling: Neighborhood Relations"/>
   <meta property="og:type" content="article"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Agent-Based Modeling"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Agent-Based Modeling: The Schelling Model of Segregation"/>
+  <meta property="twitter:title" content="Agent-Based Modeling: Neighborhood Relations"/>
 
   <!--/radix_placeholder_meta_tags-->
   
-  <meta name="citation_reference" content="citation_title=Dynamic models of segregation;citation_publication_date=1971;citation_publisher=Routledge;citation_volume=1;citation_doi=10.1080/0022250X.1971.9989794;citation_author=Thomas C. Schelling"/>
-  <meta name="citation_reference" content="citation_title=NetLogo;citation_publication_date=1999;citation_publisher=Center for Connected Learning; Computer-Based Modeling, Northwestern University;citation_author=U. Wilensky"/>
-  <meta name="citation_reference" content="citation_title=NetLogo segregation model;citation_publication_date=1997;citation_publisher=Center for Connected Learning; Computer-Based Modeling, Northwestern University;citation_author=U. Wilensky"/>
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","output","bibliography"]}},"value":[{"type":"character","attributes":{},"value":["The Schelling Model of Segregation"]},{"type":"character","attributes":{},"value":["distill::distill_article"]},{"type":"character","attributes":{},"value":["bibliography.bib"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","output","bibliography"]}},"value":[{"type":"character","attributes":{},"value":["Neighborhood Relations"]},{"type":"character","attributes":{},"value":["distill::distill_article"]},{"type":"character","attributes":{},"value":["bibliography.bib"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2079,7 +2055,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"The Schelling Model of Segregation","authors":[]}
+{"title":"Neighborhood Relations","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2101,7 +2077,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>The Schelling Model of Segregation</h1>
+<h1>Neighborhood Relations</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
 
@@ -2109,36 +2085,21 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
 <div class="d-article">
-<p>The Schelling model of segregation <span class="citation" data-cites="schelling1971segregation">(<a href="#ref-schelling1971segregation" role="doc-biblioref">Schelling 1971</a>)</span> is a famous agent-based model (ABM) and it is also one of the first that got a lot of attention. It addresses the tendency of ethnic segregation in urban areas.</p>
-<p>The model yielded some pretty surprising results and they will make clear what the intent of an agent-based model is.</p>
-<p>The constituents of the model are:</p>
-<ul>
-<li>a “world” which is just a square grid (think chess board)</li>
-<li>agents of two different kinds (let’s call them blue and orange agents)</li>
-<li>rules of how to displace agents (they “move to a different neighborhood” if they don’t feel comfortable)</li>
-</ul>
-<p>These are, coincidentally (although, of course, not so much so), the three fundamental ingredients of agent-based models in general.</p>
-<div class="layout-chunk" data-layout="l-body">
-<p><img src="schelling_files/figure-html5/unnamed-chunk-1-1.png" width="624" /></p>
-</div>
-<p>The world and the agents are relatively self-explanatory, but what about the rules?</p>
-<p>Rules in an ABM determine how agents interact with other agents or their environment. They define the “behavior” of the agents, if you will.</p>
-<p>In the Schelling model, agents have an attribute: They are either happy or unhappy. What determines their happiness is a global “tolerance” threshold which determines how many agents of the other kind they tolerate in their neighborhood (i.e., if they are blue agents, how many orange agents they accept to live next to). The neighborhood is defined as the eight cells around the cell that an agents sits on (the <a href="."><strong>Moore neighborhood</strong></a>). [TODO: add link once article done]</p>
-<p>[GRAPHIC FOR NEIGHBORHOOD]</p>
-<h4 id="task">Task</h4>
-<p>There is a free implementation of Schelling’s model of segregation <span class="citation" data-cites="wilensky1997segretation">(<a href="#ref-wilensky1997segretation" role="doc-biblioref">Wilensky 1997</a>)</span> in the NetLogo <span class="citation" data-cites="wilensky1999netlogo">(<a href="#ref-wilensky1999netlogo" role="doc-biblioref">Wilensky 1999</a>)</span> library. Open it and play around with the parameters. Can you observe some general tendencies of what happens?</p>
+<p>Cellular automata usually operate on lattices and they perform <strong>local computations</strong>, meaning that the state of a cell depends on the cell’s immediate vicinity and not some global state. This means that we need some definitions of what constitutes a neighborhood in cellular automata. But the concept of neighborhoods extends to agent-based models as well.</p>
+<h3 id="moore-neighborhood">Moore Neighborhood</h3>
+<p>Perhaps the most common neighborhood relation is the <strong>Moore neighborhood</strong>. It is used, for instance, in Conway’s <em>life</em>.</p>
+<p>The Moore neighborhood is defined on a two-dimensional lattice, or simply but, a grid. This is what it looks like:</p>
+<p>[GRAPHIC MOORE NEIGHBORHOOD]</p>
+<p>The Moore neighborhood is simply given by the four cells on each side of a cell as well as the four cells on each corner of a cell (think north, north-east, east, south-east, etc.).</p>
+<p>You might say “Well of course all 8 adjacent cells are the neighborhood of a cell! What else could it be?” Well, there is one obvious other way.</p>
+<h3 id="von-neumann-neighborhood">Von Neumann Neighborhood</h3>
+<p>The <strong>Von Neumann neighborhood</strong> is also defined on a lattice (although it is more generic and applies not only to two-dimensional grids, more on that further down). On a two-dimensional lattice, it’s simply the four cells that are adjacent to each side of a cell.</p>
+<p>[GRAPHIC VON NEUMANN NEIGHBORHOOD]</p>
+<p>The more formal definition, however, is that the Von Neumann neighborhood is comprised of the cell in question and all cells within a Manhattan distance of 1.</p>
+<h3 id="neighborhoods-in-graphs">Neighborhoods in Graphs</h3>
+<p>In a graph, the definition for neighborhood is pretty straight-forward. In the simplest case, it is just all nodes that are connected to a node by an edge. Of course, you can also define neighborhoods with larger distances, for example all nodes that are within a path distance of 2 of a node.</p>
+<p>[GRAPHIC OF GRAPH NEIGHBORHOOD]</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-schelling1971segregation" class="csl-entry" role="doc-biblioentry">
-Schelling, Thomas C. 1971. <span>“Dynamic Models of Segregation.”</span> <em>The Journal of Mathematical Sociology</em> 1 (2): 143–86. <a href="https://doi.org/10.1080/0022250X.1971.9989794">https://doi.org/10.1080/0022250X.1971.9989794</a>.
-</div>
-<div id="ref-wilensky1997segretation" class="csl-entry" role="doc-biblioentry">
-Wilensky, U. 1997. <span>“NetLogo Segregation Model.”</span> Evanston, IL: Center for Connected Learning; Computer-Based Modeling, Northwestern University. <a href="http://ccl.northwestern.edu/netlogo/models/Segregation">http://ccl.northwestern.edu/netlogo/models/Segregation</a>.
-</div>
-<div id="ref-wilensky1999netlogo" class="csl-entry" role="doc-biblioentry">
-———. 1999. <span>“NetLogo.”</span> Evanston, IL: Center for Connected Learning; Computer-Based Modeling, Northwestern University. <a href="http://ccl.northwestern.edu/netlogo/">http://ccl.northwestern.edu/netlogo/</a>.
-</div>
-</div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

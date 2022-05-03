@@ -2107,25 +2107,43 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
 <div class="d-article">
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
 <p>This game has first been described in a public newsletter by Martin Gardner <span class="citation" data-cites="gardner1970mathematical">(<a href="#ref-gardner1970mathematical" role="doc-biblioref">Gardner 1970</a>)</span>.</p>
 <p>Take a square grid of sufficient size Let’ start with something small, say 10x10. Randomly assign each cell one of two states: alive or dead.</p>
 <p>This is what we have so far:</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="life-cellular-automaton_files/figure-html5/unnamed-chunk-1-1.png" width="624" /></p>
 </div>
+<p>Light cells are dead and black cells are alive.</p>
 <p>We will now update the automaton one step at a time according to the following rules <span class="citation" data-cites="gardner1970mathematical">(<a href="#ref-gardner1970mathematical" role="doc-biblioref">Gardner 1970</a>)</span>:</p>
 <ul>
 <li>Survivals: Each alive cell with 2 or 3 neighbors survives into the next generation.</li>
 <li>Deaths: Each alive cell that has less than 2 neighbors dies from isolation. Each alive cell with 4 or more neighbors dies from overpopulation.</li>
 <li>Births: Each dead cell with exactly 3 neighbors becomes alive.</li>
 </ul>
-<p>If we talk about neighbors, we are referring to the Moore neighborhood.</p>
+<p>If we talk about neighbors, we are referring to the Moore neighborhood. Note that we apply these rules to all cells <strong>simultaneously</strong>.</p>
 <p>So far so good. Seems innoccuous, right?</p>
 <h4 id="task">Task</h4>
 <p>What would you expect to happen when we play this setup out over many generations?</p>
 <p>In fact, this cellular automaton, called <em>Life</em>, displays some very complex dynamics, and, frankly, some really fancy ones.</p>
 <p>Let’s have a look at an example.</p>
-<p>[ANIMATION OF LIFE]</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="life-cellular-automaton_files/figure-html5/full-game-1.gif" /><!-- --></p>
+</div>
+<p>You can see that there are some pulsing things, some moving things, and many more interesting emergent patterns.</p>
+<p>To this day, people are hunting for these patterns. There is already a rich library of regularities and classifications on <em>Life</em>, some of which we will have a look at.</p>
+<h3 id="glider">Glider</h3>
+<p>The <strong>glider</strong> is perhaps the most infamous structure in <em>life</em>.</p>
+<p>It looks like this:</p>
+<p>[GLIDER ANIMATION]</p>
+<p>TODO:</p>
+<ul>
+<li>gliders and spaceships, oscillators, still lifes</li>
+<li>a bit of history</li>
+<li>intuitive notion of emergence</li>
+</ul>
 <h4 id="project">Project</h4>
 <p>Implement <em>Life</em> in Julia.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
