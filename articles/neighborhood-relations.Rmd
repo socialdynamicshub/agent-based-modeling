@@ -1,0 +1,57 @@
+---
+title: "Neighborhood Relations"
+output: distill::distill_article
+bibliography: bibliography.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Cellular automata usually operate on lattices and they perform **local computations**, meaning that the state of a cell depends on the cell's immediate vicinity and not some global state.
+This means that we need some definitions of what constitutes a neighborhood in cellular automata.
+But the concept of neighborhoods extends to agent-based models as well.
+
+### Moore Neighborhood
+
+Perhaps the most common neighborhood relation is the **Moore neighborhood**.
+It is used, for instance, in Conway's *life*.
+
+The Moore neighborhood is defined on a two-dimensional lattice, or simply but, a grid.
+This is what it looks like:
+
+[GRAPHIC MOORE NEIGHBORHOOD]
+
+The Moore neighborhood is simply given by the four cells on each side of a cell as well as the four cells on each corner of a cell (think north, north-east, east, south-east, etc.).
+
+You might say "Well of course all 8 adjacent cells are the neighborhood of a cell! What else could it be?".
+Well, there is one obvious other way.
+
+### Von Neumann Neighborhood
+
+The **Von Neumann neighborhood** is also defined on a lattice (although it is more generic and applies not only to two-dimensional grids, more on that further down).
+On a two-dimensional lattice, it's simply the four cells that are adjacent to each side of a cell.
+
+[GRAPHIC VON NEUMANN NEIGHBORHOOD]
+
+The more formal definition, however, is that the Von Neumann neighborhood is comprised of the cell in question and all cells within a Manhattan distance of 1.
+
+
+### Neighborhoods in Graphs
+
+In a graph, the definition for neighborhood is pretty straight-forward.
+In the simplest case, it is just all nodes that are connected to a node by an edge.
+Of course, you can also define neighborhoods with larger distances, for example all nodes that are within a path distance of 2 of a node.
+
+[GRAPHIC OF GRAPH NEIGHBORHOOD]
+
+
+
+
+
+
+
+
+
+
+

@@ -11,3 +11,5 @@ knitr::opts_chunk$set(echo = FALSE)
 
 
 * [The Schelling model of segregation](./schelling.html)
+* [Cellular automata](./cellular-automata.html)
+* [Life](./life-cellular-automaton.html)

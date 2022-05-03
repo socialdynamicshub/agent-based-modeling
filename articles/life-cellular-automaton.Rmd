@@ -1,17 +1,87 @@
 ---
-title: "Life"
+title: "Conway's Life"
 output: distill::distill_article
+bibliography: bibliography.bib
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+library(ggplot2)
+library(dplyr)
 ```
 
-Take a square grid of sufficient size, say 100x100.
+This game has first been described in a public newsletter by Martin Gardner [@gardner1970mathematical].
+
+Take a square grid of sufficient size
+Let' start with something small, say 10x10.
 Randomly assign each cell one of two states: alive or dead.
 
 This is what we have so far:
 
-[LIFE SETUP GRAPHIC]
+```{r}
+axis_size <- 10
+
+df <- data.frame(
+  x = rep(seq(1, axis_size), each = axis_size),
+  y = rep(seq(1, axis_size), times = axis_size),
+  state = sample(c("alive", "dead"), replace = TRUE, axis_size^2)
+)
+
+color_scheme <- c("alive" = "black", "dead" = "white")
+
+df %>% 
+  ggplot(aes(x = x, y = y, fill = state)) +
+  geom_point(size = 13, shape = 22, color = "lightgrey") +
+  scale_fill_manual(values = color_scheme) +
+  coord_fixed() +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = "none",
+    panel.background = element_rect(fill = "white"),
+    panel.grid = element_blank()
+  ) +
+  NULL
+```
 
 
+We will now update the automaton one step at a time according to the following rules [@gardner1970mathematical]:
+
+* Survivals: Each alive cell with 2 or 3 neighbors survives into the next generation.
+* Deaths: Each alive cell that has less than 2 neighbors dies from isolation. Each alive cell with 4 or more neighbors dies from overpopulation.
+* Births: Each dead cell with exactly 3 neighbors becomes alive.
+
+If we talk about neighbors, we are referring to the Moore neighborhood.
+Note that we apply these rules to all cells **simultaneously**.
+
+So far so good.
+Seems innoccuous, right?
+
+#### Task
+
+What would you expect to happen when we play this setup out over many generations?
+
+
+In fact, this cellular automaton, called *Life*, displays some very complex dynamics, and, frankly, some really fancy ones.
+
+Let's have a look at an example.
+
+[ANIMATION OF LIFE]
+
+
+TODO:
+
+* gliders, spaceships
+* a bit of history
+* intuitive notion of emergence
+
+
+
+
+
+
+
+#### Project
+
+Implement *Life* in Julia.
