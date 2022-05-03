@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
-The Schelling model of segregation [@schelling1971segregation] is a famous agent-based model and it is also one of the first that got a lot of attention.
+The Schelling model of segregation [@schelling1971segregation] is a famous agent-based model (ABM) and it is also one of the first that got a lot of attention.
 It addresses the tendency of ethnic segregation in urban areas.
 
 The model yielded some pretty surprising results and they will make clear what the intent of an agent-based model is.
@@ -19,6 +19,33 @@ The constituents of the model are:
 * a "world" which is just a square grid (think chess board)
 * agents of two different kinds (let's call them blue and orange agents)
 * rules of how to displace agents (they "move to a different neighborhood" if they don't feel comfortable)
+
+These are, coincidentally (although, of course, not so much so), the three fundamental ingredients of agent-based models in general.
+
+[GRAPHIC OF SETUP]
+
+The world and the agents are relatively self-explanatory, but what about the rules?
+
+Rules in an ABM determine how agents interact with other agents or their environment.
+They define the "behavior" of the agents, if you will.
+
+In the Schelling model, agents have an attribute: They are either happy or unhappy.
+What determines their happiness is a global "tolerance" threshold which determines how many agents of the other kind they tolerate in their neighborhood (i.e., if they are blue agents, how many orange agents they accept to live next to).
+The neighborhood is defined as the eight cells around the cell that an agents sits on.
+
+[GRAPHIC FOR NEIGHBORHOOD]
+
+
+
+
+
+#### Task
+
+There is a free implementation of Schelling's model of segregation [@wilensky1997segretation] in the netlogo [@wilensky1999netlogo] library.
+Open it and play around with the parameters.
+Can you observe some general tendencies of what happens?
+
+
 
 
 

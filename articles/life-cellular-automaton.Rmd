@@ -1,0 +1,17 @@
+---
+title: "Life"
+output: distill::distill_article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Take a square grid of sufficient size, say 100x100.
+Randomly assign each cell one of two states: alive or dead.
+
+This is what we have so far:
+
+[LIFE SETUP GRAPHIC]
+
+

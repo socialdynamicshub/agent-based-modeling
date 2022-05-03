@@ -1,0 +1,21 @@
+---
+title: "Cellular Automata"
+output: distill::distill_article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+One of the main purposes of agent-based modeling is to find potential explanations for **emergent** properties of complex systems.
+That's a mouth full.
+Let's break it down and start with **emergence**.
+
+It's a concept that is a bit hard to explain, but cellular automata serve as a great example because they make it intuitively understandable.
+
+
+
+
+
+
+

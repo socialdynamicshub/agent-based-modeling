@@ -6,7 +6,7 @@
       "description": "Some additional details about the website",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2022-05-03T09:52:55+02:00"
+      "last_modified": "2022-05-03T10:20:20+02:00"
     },
     {
       "path": "index.html",
@@ -14,14 +14,14 @@
       "description": "Welcome to the website. I hope you enjoy it!\n",
       "author": [],
       "contents": "\nThe Schelling model of segregation\n\n\n\n",
-      "last_modified": "2022-05-03T09:52:55+02:00"
+      "last_modified": "2022-05-03T10:20:20+02:00"
     },
     {
       "path": "schelling.html",
       "title": "The Schelling Model of Segregation",
       "author": [],
-      "contents": "\nThe Schelling model of segregation (Schelling 1971) is a famous agent-based model and it is also one of the first that got a lot of attention. It addresses the tendency of ethnic segregation in urban areas.\nThe model yielded some pretty surprising results and they will make clear what the intent of an agent-based model is.\nThe constituents of the model are:\na “world” which is just a square grid (think chess board)\nagents of two different kinds (let’s call them blue and orange agents)\nrules of how to displace agents (they “move to a different neighborhood” if they don’t feel comfortable)\n\n\n\nSchelling, Thomas C. 1971. “Dynamic Models of Segregation.” The Journal of Mathematical Sociology 1 (2): 143–86. https://doi.org/10.1080/0022250X.1971.9989794.\n\n\n\n\n",
-      "last_modified": "2022-05-03T09:52:55+02:00"
+      "contents": "\nThe Schelling model of segregation (Schelling 1971) is a famous agent-based model (ABM) and it is also one of the first that got a lot of attention. It addresses the tendency of ethnic segregation in urban areas.\nThe model yielded some pretty surprising results and they will make clear what the intent of an agent-based model is.\nThe constituents of the model are:\na “world” which is just a square grid (think chess board)\nagents of two different kinds (let’s call them blue and orange agents)\nrules of how to displace agents (they “move to a different neighborhood” if they don’t feel comfortable)\nThese are, coincidentally (although, of course, not so much so), the three fundamental ingredients of agent-based models in general.\n[GRAPHIC OF SETUP]\nThe world and the agents are relatively self-explanatory, but what about the rules?\nRules in an ABM determine how agents interact with other agents or their enviroment. They define the “behavior” of the agents, if you will.\nIn the Schelling model,\nTask\nThere is a free implementation of Schelling’s model of segregation (Wilensky 1997) in the netlogo (Wilensky 1999) library. Open it and play around with the parameters. Can you observe some general tendencies of what happens?\n\n\n\nSchelling, Thomas C. 1971. “Dynamic Models of Segregation.” The Journal of Mathematical Sociology 1 (2): 143–86. https://doi.org/10.1080/0022250X.1971.9989794.\n\n\nWilensky, U. 1997. “NetLogo Segregation Model.” Evanston, IL: Center for Connected Learning; Computer-Based Modeling, Northwestern University. http://ccl.northwestern.edu/netlogo/models/Segregation.\n\n\n———. 1999. “NetLogo.” Evanston, IL: Center for Connected Learning; Computer-Based Modeling, Northwestern University. http://ccl.northwestern.edu/netlogo/.\n\n\n\n\n",
+      "last_modified": "2022-05-03T10:20:21+02:00"
     }
   ],
   "collections": []

@@ -126,6 +126,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_meta_tags-->
   
   <meta name="citation_reference" content="citation_title=Dynamic models of segregation;citation_publication_date=1971;citation_publisher=Routledge;citation_volume=1;citation_doi=10.1080/0022250X.1971.9989794;citation_author=Thomas C. Schelling"/>
+  <meta name="citation_reference" content="citation_title=NetLogo;citation_publication_date=1999;citation_publisher=Center for Connected Learning; Computer-Based Modeling, Northwestern University;citation_author=U. Wilensky"/>
+  <meta name="citation_reference" content="citation_title=NetLogo segregation model;citation_publication_date=1997;citation_publisher=Center for Connected Learning; Computer-Based Modeling, Northwestern University;citation_author=U. Wilensky"/>
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
@@ -2107,7 +2109,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
 <div class="d-article">
-<p>The Schelling model of segregation <span class="citation" data-cites="schelling1971segregation">(<a href="#ref-schelling1971segregation" role="doc-biblioref">Schelling 1971</a>)</span> is a famous agent-based model and it is also one of the first that got a lot of attention. It addresses the tendency of ethnic segregation in urban areas.</p>
+<p>The Schelling model of segregation <span class="citation" data-cites="schelling1971segregation">(<a href="#ref-schelling1971segregation" role="doc-biblioref">Schelling 1971</a>)</span> is a famous agent-based model (ABM) and it is also one of the first that got a lot of attention. It addresses the tendency of ethnic segregation in urban areas.</p>
 <p>The model yielded some pretty surprising results and they will make clear what the intent of an agent-based model is.</p>
 <p>The constituents of the model are:</p>
 <ul>
@@ -2115,10 +2117,23 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <li>agents of two different kinds (let’s call them blue and orange agents)</li>
 <li>rules of how to displace agents (they “move to a different neighborhood” if they don’t feel comfortable)</li>
 </ul>
+<p>These are, coincidentally (although, of course, not so much so), the three fundamental ingredients of agent-based models in general.</p>
+<p>[GRAPHIC OF SETUP]</p>
+<p>The world and the agents are relatively self-explanatory, but what about the rules?</p>
+<p>Rules in an ABM determine how agents interact with other agents or their enviroment. They define the “behavior” of the agents, if you will.</p>
+<p>In the Schelling model,</p>
+<h4 id="task">Task</h4>
+<p>There is a free implementation of Schelling’s model of segregation <span class="citation" data-cites="wilensky1997segretation">(<a href="#ref-wilensky1997segretation" role="doc-biblioref">Wilensky 1997</a>)</span> in the netlogo <span class="citation" data-cites="wilensky1999netlogo">(<a href="#ref-wilensky1999netlogo" role="doc-biblioref">Wilensky 1999</a>)</span> library. Open it and play around with the parameters. Can you observe some general tendencies of what happens?</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
 <div id="ref-schelling1971segregation" class="csl-entry" role="doc-biblioentry">
 Schelling, Thomas C. 1971. <span>“Dynamic Models of Segregation.”</span> <em>The Journal of Mathematical Sociology</em> 1 (2): 143–86. <a href="https://doi.org/10.1080/0022250X.1971.9989794">https://doi.org/10.1080/0022250X.1971.9989794</a>.
+</div>
+<div id="ref-wilensky1997segretation" class="csl-entry" role="doc-biblioentry">
+Wilensky, U. 1997. <span>“NetLogo Segregation Model.”</span> Evanston, IL: Center for Connected Learning; Computer-Based Modeling, Northwestern University. <a href="http://ccl.northwestern.edu/netlogo/models/Segregation">http://ccl.northwestern.edu/netlogo/models/Segregation</a>.
+</div>
+<div id="ref-wilensky1999netlogo" class="csl-entry" role="doc-biblioentry">
+———. 1999. <span>“NetLogo.”</span> Evanston, IL: Center for Connected Learning; Computer-Based Modeling, Northwestern University. <a href="http://ccl.northwestern.edu/netlogo/">http://ccl.northwestern.edu/netlogo/</a>.
 </div>
 </div>
 <!--radix_placeholder_article_footer-->
