@@ -1,0 +1,25 @@
+---
+title: "The Schelling Model of Segregation"
+output: distill::distill_article
+bibliography: bibliography.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+The Schelling model of segregation [@schelling1971segregation] is a famous agent-based model and it is also one of the first that got a lot of attention.
+It addresses the tendency of ethnic segregation in urban areas.
+
+The model yielded some pretty surprising results and they will make clear what the intent of an agent-based model is.
+
+The constituents of the model are:
+
+* a "world" which is just a square grid (think chess board)
+* agents of two different kinds (let's call them blue and orange agents)
+* rules of how to displace agents (they "move to a different neighborhood" if they don't feel comfortable)
+
+
+
+
