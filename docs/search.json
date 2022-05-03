@@ -6,15 +6,22 @@
       "description": "Some additional details about the website",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2022-05-03T09:33:24+02:00"
+      "last_modified": "2022-05-03T09:52:55+02:00"
     },
     {
       "path": "index.html",
       "title": "My Website",
       "description": "Welcome to the website. I hope you enjoy it!\n",
       "author": [],
-      "contents": "\n\n\n\n",
-      "last_modified": "2022-05-03T09:33:24+02:00"
+      "contents": "\nThe Schelling model of segregation\n\n\n\n",
+      "last_modified": "2022-05-03T09:52:55+02:00"
+    },
+    {
+      "path": "schelling.html",
+      "title": "The Schelling Model of Segregation",
+      "author": [],
+      "contents": "\nThe Schelling model of segregation (Schelling 1971) is a famous agent-based model and it is also one of the first that got a lot of attention. It addresses the tendency of ethnic segregation in urban areas.\nThe model yielded some pretty surprising results and they will make clear what the intent of an agent-based model is.\nThe constituents of the model are:\na “world” which is just a square grid (think chess board)\nagents of two different kinds (let’s call them blue and orange agents)\nrules of how to displace agents (they “move to a different neighborhood” if they don’t feel comfortable)\n\n\n\nSchelling, Thomas C. 1971. “Dynamic Models of Segregation.” The Journal of Mathematical Sociology 1 (2): 143–86. https://doi.org/10.1080/0022250X.1971.9989794.\n\n\n\n\n",
+      "last_modified": "2022-05-03T09:52:55+02:00"
     }
   ],
   "collections": []
