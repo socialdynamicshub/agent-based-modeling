@@ -100,6 +100,9 @@ life_game <- function(initial_state, steps) {
   d$state <- as.factor(d$state)
   return(d)
 }
+
+# NOTE: visualization with ggplot currently flips the board
+#       -> maybe fix in visualization
 ```
 
 
@@ -206,7 +209,46 @@ The **glider** is perhaps the most infamous structure in *life*.
 
 It looks like this:
 
-[GLIDER ANIMATION]
+```{r glider}
+axis_size <- 20
+initial_state <- matrix(
+  nrow = axis_size,
+  ncol = axis_size,
+  data = rep(0, axis_size^2)
+)
+initial_state[3, 1] <- 1
+initial_state[3, 2] <- 1
+initial_state[3, 3] <- 1
+initial_state[2, 3] <- 1
+initial_state[1, 2] <- 1
+
+game_of_life <- life_game(initial_state, 100)
+
+color_scheme <- c(`0` = "white", `1` = "black")
+
+anim <- game_of_life %>% 
+  ggplot(aes(x = x, y = y, fill = state)) +
+  geom_point(size = 5, shape = 22, color = "transparent") +
+  scale_fill_manual(values = color_scheme) +
+  scale_x_continuous(minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
+  scale_y_continuous(trans = "reverse", minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
+  coord_fixed() +
+  transition_states(step, transition_length = 1, state_length = 1) +
+  ggtitle("A Glider in Life") +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = "none",
+    panel.background = element_rect(fill = "transparent") ,
+    panel.grid.minor = element_line(color = "lightgrey"),
+    panel.grid.major = element_line(color = "transparent"),
+    panel.border = element_rect(fill = "transparent", color = "darkgrey", size = 3),
+  )
+
+animate(anim, nframes = 101, renderer = gifski_renderer())
+```
+
 
 
 TODO:
