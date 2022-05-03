@@ -11,96 +11,12 @@ library(gganimate)
 library(magick)
 library(dplyr)
 library(tidyr)
+source("./helpers/life.R")
+source("./helpers/board_to_df.R")
+set.seed(420)
 ```
 
-```{r life-implementation}
-life_step <- function(m) {
-  axis_size <- dim(m)[1]
-  m_upd <- matrix(nrow = axis_size, ncol = axis_size, rep(0, axis_size^2))
-  
-  for (equator in 1:axis_size) {
-    for (meridian in 1:axis_size) {
-      
-      if (equator == 1) {
-        t <- axis_size
-      } else {
-        t <- equator - 1
-      }
-      if (equator == axis_size) {
-        b <- 1
-      } else {
-        b <- equator + 1
-      }
-      if (meridian == 1) {
-        l <- axis_size
-      } else {
-        l <- meridian - 1
-      }
-      if (meridian == axis_size) {
-        r <- 1
-      } else {
-        r <- meridian + 1
-      }
-
-      positions <- list(
-        c(t, l),
-        c(t, meridian),
-        c(t, r),
-        c(equator, l),
-        c(equator , r),
-        c(b, l),
-        c(b, meridian),
-        c(b, r)
-      )
-      
-      neigh_sum <- 0
-
-      for (pos in positions) {
-        neigh_sum <- neigh_sum + m[pos[1], pos[2]]  
-      }
-      
-      if (m[equator, meridian] == 1) {
-        if (neigh_sum %in% c(2, 3)) {
-          m_upd[equator, meridian] <- 1
-        }
-      } else {
-        if (neigh_sum == 3) {
-          m_upd[equator, meridian] <- 1
-        }
-      }
-      
-    }
-  }
- 
-  return(m_upd) 
-}
-
-board_to_df <- function(m, step) {
-  axis_size <- dim(m)[1]
-  d <- data.frame(m)
-  names(d) <- seq(1, axis_size)
-  d <- pivot_longer(d, cols = names(d), names_to = "y", values_to = "state")
-  d$x <- rep(seq(1, axis_size), each = axis_size)
-  d <- select(d, x, y, state)
-  d$step <- step
-  return(d)
-}
-
-life_game <- function(initial_state, steps) {
-  m <- initial_state
-  d <- board_to_df(m, 0)
-  for (i in 1:steps) {
-    m_upd <- life_step(m)
-    d <- bind_rows(d, board_to_df(m_upd, i))
-    m <- m_upd
-  }
-  d <- select(d, step, x, y, state)
-  d$x <- as.numeric(d$x)
-  d$y <- as.numeric(d$y)
-  d$state <- as.factor(d$state)
-  return(d)
-}
-
+```{r notes}
 # NOTE: visualization with ggplot currently flips the board
 #       -> maybe fix in visualization
 ```
@@ -108,44 +24,35 @@ life_game <- function(initial_state, steps) {
 
 This game has first been described in a public newsletter by Martin Gardner [@gardner1970mathematical].
 
-Take a square grid of sufficient size
-Let' start with something small, say 10x10.
-Randomly assign each cell one of two states: alive or dead.
-
-This is what we have so far:
+Take a square grid of sufficient size and assign each cell one of two states: alive or dead.
+Let' start with something small, say 20x20:
 
 ```{r}
-axis_size <- 50
-
-df <- data.frame(
-  x = rep(seq(1, axis_size), each = axis_size),
-  y = rep(seq(1, axis_size), times = axis_size),
-  state = sample(c(0, 1), prob = c(0.8, 0.2), replace = TRUE, axis_size^2)
-)
-df$x <- as.numeric(df$x)
-df$y <- as.numeric(df$y)
-df$state <- as.factor(df$state)
+initial_state <- matrix(sample(c(0, 1), prob = c(0.8, 0.2), replace = TRUE, 400), nrow = 20, ncol = 20)
+initial_state_df <- board_to_df(initial_state)
 
 color_scheme <- c(`0` = "white", `1` = "black")
 
-df %>% 
+initial_state_df %>% 
   ggplot(aes(x = x, y = y, fill = state)) +
   geom_point(size = 5, shape = 22, color = "transparent") +
   scale_fill_manual(values = color_scheme) +
+  scale_x_continuous(minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
+  scale_y_continuous(trans = "reverse", minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
   coord_fixed() +
-  ggtitle("Random setup with ~20% alive cells") +
   theme(
     axis.title = element_blank(),
     axis.text = element_blank(),
     axis.ticks = element_blank(),
     legend.position = "none",
-    panel.background = element_rect(fill = "white"),
-    panel.grid = element_blank(),
-    panel.border = element_rect(fill = "transparent", color = "darkgrey", size = 3),
+    panel.background = element_rect(fill = "transparent") ,
+    panel.grid.minor = element_line(color = "lightgrey"),
+    panel.grid.major = element_line(color = "transparent"),
+    panel.border = element_rect(fill = "transparent", color = "darkgrey", size = 3)
   )
 ```
 
-Light cells are dead and black cells are alive.
+White cells are dead and black cells are alive.
 
 We will now update the automaton one step at a time according to the following rules [@gardner1970mathematical]:
 
@@ -166,14 +73,9 @@ What would you expect to happen when we play this setup out over many generation
 
 In fact, this cellular automaton, called *Life*, displays some very complex dynamics, and, frankly, some really fancy ones.
 
-Let's have a look at an example.
+Let's have a look at how the initial state shown above would play out.
 
 ```{r full-game}
-axis_size <- 50
-initial_state <- matrix(
-  nrow = axis_size,
-  ncol = axis_size,
-  data = sample(c(0, 1), prob = c(0.8, 0.2), replace = TRUE, axis_size^2))
 game_of_life <- life_game(initial_state, 100)
 
 color_scheme <- c(`0` = "white", `1` = "black")
@@ -182,17 +84,19 @@ anim <- game_of_life %>%
   ggplot(aes(x = x, y = y, fill = state)) +
   geom_point(size = 5, shape = 22, color = "transparent") +
   scale_fill_manual(values = color_scheme) +
+  scale_x_continuous(minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
+  scale_y_continuous(trans = "reverse", minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
   coord_fixed() +
   transition_states(step, transition_length = 1, state_length = 1) +
-  ggtitle("Step {frame - 1}") +
   theme(
     axis.title = element_blank(),
     axis.text = element_blank(),
     axis.ticks = element_blank(),
     legend.position = "none",
-    panel.background = element_rect(fill = "white"),
-    panel.grid = element_blank(),
-    panel.border = element_rect(fill = "transparent", color = "darkgrey", size = 3),
+    panel.background = element_rect(fill = "transparent") ,
+    panel.grid.minor = element_line(color = "lightgrey"),
+    panel.grid.major = element_line(color = "transparent"),
+    panel.border = element_rect(fill = "transparent", color = "darkgrey", size = 3)
   )
 
 animate(anim, nframes = 101, renderer = gifski_renderer())

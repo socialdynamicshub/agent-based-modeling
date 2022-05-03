@@ -2111,12 +2111,11 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 </div>
 <p>This game has first been described in a public newsletter by Martin Gardner <span class="citation" data-cites="gardner1970mathematical">(<a href="#ref-gardner1970mathematical" role="doc-biblioref">Gardner 1970</a>)</span>.</p>
-<p>Take a square grid of sufficient size Let’ start with something small, say 10x10. Randomly assign each cell one of two states: alive or dead.</p>
-<p>This is what we have so far:</p>
+<p>Take a square grid of sufficient size and assign each cell one of two states: alive or dead. Let’ start with something small, say 20x20:</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="life-cellular-automaton_files/figure-html5/unnamed-chunk-1-1.png" width="624" /></p>
 </div>
-<p>Light cells are dead and black cells are alive.</p>
+<p>White cells are dead and black cells are alive.</p>
 <p>We will now update the automaton one step at a time according to the following rules <span class="citation" data-cites="gardner1970mathematical">(<a href="#ref-gardner1970mathematical" role="doc-biblioref">Gardner 1970</a>)</span>:</p>
 <ul>
 <li>Survivals: Each alive cell with 2 or 3 neighbors survives into the next generation.</li>
@@ -2128,7 +2127,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h4 id="task">Task</h4>
 <p>What would you expect to happen when we play this setup out over many generations?</p>
 <p>In fact, this cellular automaton, called <em>Life</em>, displays some very complex dynamics, and, frankly, some really fancy ones.</p>
-<p>Let’s have a look at an example.</p>
+<p>Let’s have a look at how the initial state shown above would play out.</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="life-cellular-automaton_files/figure-html5/full-game-1.gif" /><!-- --></p>
 </div>
