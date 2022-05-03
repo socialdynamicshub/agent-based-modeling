@@ -1,7 +1,7 @@
 ---
-title: "My Website"
+title: "Agent-Based Modeling"
 description: |
-  Welcome to the website. I hope you enjoy it!
+  An Introduction to Agent-Based Modeling and the Property of Emergence in Complex Systems.
 site: distill::distill_website
 ---
 
@@ -13,3 +13,4 @@ knitr::opts_chunk$set(echo = FALSE)
 * [The Schelling model of segregation](./schelling.html)
 * [Cellular automata](./cellular-automata.html)
 * [Life](./life-cellular-automaton.html)
+* [Neighborhoods](./neighborhood-relations.html)

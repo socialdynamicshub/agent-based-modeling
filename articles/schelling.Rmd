@@ -69,7 +69,7 @@ The neighborhood is defined as the eight cells around the cell that an agents si
 
 #### Task
 
-There is a free implementation of Schelling's model of segregation [@wilensky1997segretation] in the netlogo [@wilensky1999netlogo] library.
+There is a free implementation of Schelling's model of segregation [@wilensky1997segretation] in the NetLogo [@wilensky1999netlogo] library.
 Open it and play around with the parameters.
 Can you observe some general tendencies of what happens?
 
