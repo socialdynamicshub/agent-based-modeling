@@ -12,6 +12,7 @@ library(magick)
 library(dplyr)
 library(tidyr)
 source("./helpers/life.R")
+source("./helpers/get_moore_neighborhood.R")
 source("./helpers/board_to_df.R")
 set.seed(420)
 ```

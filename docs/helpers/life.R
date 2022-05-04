@@ -1,4 +1,5 @@
 library(dplyr)
+source("./helpers/get_moore_neighborhood.R")
 source("./helpers/board_to_df.R")
 
 life_step <- function(m) {
@@ -7,41 +8,9 @@ life_step <- function(m) {
   
   for (equator in 1:axis_size) {
     for (meridian in 1:axis_size) {
-      
-      if (equator == 1) {
-        t <- axis_size
-      } else {
-        t <- equator - 1
-      }
-      if (equator == axis_size) {
-        b <- 1
-      } else {
-        b <- equator + 1
-      }
-      if (meridian == 1) {
-        l <- axis_size
-      } else {
-        l <- meridian - 1
-      }
-      if (meridian == axis_size) {
-        r <- 1
-      } else {
-        r <- meridian + 1
-      }
-
-      positions <- list(
-        c(t, l),
-        c(t, meridian),
-        c(t, r),
-        c(equator, l),
-        c(equator , r),
-        c(b, l),
-        c(b, meridian),
-        c(b, r)
-      )
-      
+      positions <- get_moore_neighborhood(equator, meridian, axis_size, periodic = TRUE)
       neigh_sum <- 0
-
+      
       for (pos in positions) {
         neigh_sum <- neigh_sum + m[pos[1], pos[2]]  
       }

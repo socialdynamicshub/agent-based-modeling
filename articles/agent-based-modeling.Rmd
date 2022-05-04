@@ -1,0 +1,81 @@
+---
+title: "Agent-Based Modeling"
+output: distill::distill_article
+bibliography: bibliography.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+**Agent-based modeling (ABM)** is a technique used to model complex emergent phenomena through the simulation of local interactions.
+Crudely speaking, this is what you do to set up an ABM:
+You create a bunch of agents with some defined behavior, put them in an arena, and enjoy the show.
+Of course, there is more to ABM than this, but I find it a useful way to develop a basic understanding of ABM.
+
+In general, an ABM consists of three main components [@epstein1996growing]:
+
+* agents
+* an environment
+* rules of how agents interact with one another and their environment
+
+They are suited for problems where an emergent phenomenon can be explained by local interactions.
+Usually, in ABMs, we define behavior on an individual level (i.e., agent level), hence ABMs are sometimes also referred to as Individual-Based Models.
+What we want to observe, though, is effects on a "global" level (global with regard to the model).
+
+This means that ABMs are characterized by a **micro and a macro level**.
+
+It might be easiest to start with a totally artificial example.
+
+This is from the text book by Wilensky and Rand [@wilensky2015abm].
+
+Create a couple of agents.
+Arrange them in a circle.
+In each step, the agents move a little bit forward and then turn by a certain degree in such a way that they always stay on the outline of the circle.
+
+If you play this initial setup out, the agents will just move around in a circle.
+
+This is determined by the behavior that we gave the agents, namely "move a bit forward, then turn".
+
+[CIRCLING ANIMATION]
+
+Now, we have calibrated this behavior perfectly for the agents to move in a circle.
+Say we increase the distance that the agents move forward by a tiny amount.
+What would you expect to happen?
+
+[EITHER ANIMATED GRAPHIC OR LINK TO NETLOGO LIBRARY]
+
+Would you have expected this?
+If you're like me, you would have probably expected the agents to just move in a bigger circle or something along those lines.
+
+This "pulsing" that we can observe is an **emergent** phenomenon.
+
+Simply looking at the constituents of the system doesn't tell us a lot.
+If we simply observed a single agent, we would just see it move a bit forward and then turn.
+Maybe we might guess, that it moves in a circle.
+And maybe, if you really took the time and reasoned through the entire thing carefully, you might have guessed that this "pulsing" would happen.
+
+However, this is an *extremely* simple and also a very artificial example of an ABM.
+Additionally, in this model, we know the agents first and have no idea about the emergent phenomenon.
+
+Usually, ABM is employed to try to find possible explanations for a well-known macro-level phenomenon by "growing" it from local interactions [@epstein1996growing, @epstein1999generative].
+
+In most cases, it is virtually impossible to explain an emergent phenomenon in a system by simply thinking about it.
+
+[CONTINUE]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

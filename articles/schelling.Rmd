@@ -6,6 +6,13 @@ bibliography: bibliography.bib
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+library(ggplot2)
+library(gganimate)
+library(dplyr)
+source("./helpers/board_to_df.R")
+source("./helpers/get_moore_neighborhood.R")
+source("./helpers/schelling.R")
+set.seed(420)
 ```
 
 
@@ -63,7 +70,44 @@ The neighborhood is defined as the eight cells around the cell that an agents si
 
 [GRAPHIC FOR NEIGHBORHOOD]
 
+[...SOME MORE ELABORATION]
 
+
+Let's look at a simple example.
+Here, we have about 40% blue agents, 40% orange agents, and 20% free cells.
+The tolerance level is set to 4, meaning that each agent prefers 4 or more agents of its own kind in its neighborhood.
+
+```{r}
+init_board <- matrix(
+  sample(c(0, 1, 2), replace = TRUE, prob = c(0.1, 0.45, 0.45), size = 400),
+  ncol = 20, nrow = 20
+)
+tolerance <- 4
+schelling <- schelling_game(init_board, tolerance, 300)
+
+color_scheme <- c(`0` = "white", `1` = "orange", `2` = "blue")
+
+anim <- schelling %>%
+  ggplot(aes(x = x, y = y, fill = state)) +
+  geom_point(size = 5, shape = 22, color = "transparent") +
+  scale_fill_manual(values = color_scheme) +
+  scale_x_continuous(minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
+  scale_y_continuous(trans = "reverse", minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
+  transition_states(step, transition_length = 1, state_length = 1) +
+  coord_fixed() +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = "none",
+    panel.background = element_rect(fill = "transparent") ,
+    panel.grid.minor = element_line(color = "lightgrey"),
+    panel.grid.major = element_line(color = "transparent"),
+    panel.border = element_rect(fill = "transparent", color = "darkgrey", size = 3)
+  )
+
+animate(anim, nframes = 400, renderer = av_renderer())
+```
 
 
 
@@ -72,6 +116,7 @@ The neighborhood is defined as the eight cells around the cell that an agents si
 There is a free implementation of Schelling's model of segregation [@wilensky1997segretation] in the NetLogo [@wilensky1999netlogo] library.
 Open it and play around with the parameters.
 Can you observe some general tendencies of what happens?
+
 
 
 
