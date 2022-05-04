@@ -43,9 +43,9 @@ life_game <- function(initial_state, steps) {
     d_step$step <- i
     m <- m_upd
   }
-  d <- select(d, step, x, y, state)
-  d$x <- as.numeric(d$x)
-  d$y <- as.numeric(d$y)
+  d <- select(d, step, row, col, state)
+  d$row <- as.numeric(d$row)
+  d$col <- as.numeric(d$col)
   d$state <- as.factor(d$state)
   return(d)
 }

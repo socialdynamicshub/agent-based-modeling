@@ -12,102 +12,103 @@ library(dplyr)
 source("./helpers/board_to_df.R")
 source("./helpers/get_moore_neighborhood.R")
 source("./helpers/schelling.R")
+source("./helpers/grid_plot.R")
 set.seed(420)
 ```
 
 
-The Schelling model of segregation [@schelling1971segregation] is a famous agent-based model (ABM) and it is also one of the first that got a lot of attention.
+The Schelling model of segregation [@schelling1971segregation] is a famous agent-based model (ABM) and it is one of the first that got a lot of attention.
 It addresses the tendency of ethnic segregation in urban areas.
 
 The model yielded some pretty surprising results and they will make clear what the intent of an agent-based model is.
 
 The constituents of the model are:
 
-* a "world" which is just a square grid (think chess board)
-* agents of two different kinds (let's call them blue and orange agents)
-* rules of how to displace agents (they "move to a different neighborhood" if they don't feel comfortable)
+#### An Environment
 
-These are, coincidentally (although, of course, not so much so), the three fundamental ingredients of agent-based models in general.
+The environment is the "arena" in which the agents interact with one another.
+In the Schelling model, we use a square grid:
 
 ```{r}
-axis_size <- 10
-
-df <- data.frame(
-  x = rep(seq(1, axis_size), each = axis_size),
-  y = rep(seq(1, axis_size), times = axis_size),
-  state = sample(c("blue", "orange", "empty"), prob = c(0.4, 0.4, 0.2), replace = TRUE, axis_size^2)
-)
-
-color_scheme <- c("blue" = "blue", "orange" = "orange", "empty" = "transparent")
-
-df %>% 
-  ggplot(aes(x = x, y = y, fill = state)) +
-  geom_point(size = 13, shape = 22, color = "transparent") +
-  scale_fill_manual(values = color_scheme) +
-  coord_fixed() +
-  theme(
-    axis.title = element_blank(),
-    axis.text = element_blank(),
-    axis.ticks = element_blank(),
-    legend.position = "none",
-    panel.background = element_rect(fill = "white"),
-    panel.grid = element_blank(),
-    panel.border = element_rect(fill = "transparent", color = "darkgrey", size = 3),
-  ) +
-  NULL
+axis_size <- 20
+board <- matrix(0, nrow = axis_size, ncol = axis_size)
+df <- board_to_df(board)
+df$cell_id <- as.factor(1:nrow(df))
+color_scheme <- c(`0` = "white")
+grid_plot(df, 5, color_scheme)
 ```
 
+#### Agents
 
-The world and the agents are relatively self-explanatory, but what about the rules?
-
-Rules in an ABM determine how agents interact with other agents or their environment.
-They define the "behavior" of the agents, if you will.
-
-In the Schelling model, agents have an attribute: They are either happy or unhappy.
-What determines their happiness is a global "tolerance" threshold which determines how many agents of the other kind they tolerate in their neighborhood (i.e., if they are blue agents, how many orange agents they accept to live next to).
-The neighborhood is defined as the eight cells around the cell that an agents sits on (the [**Moore neighborhood**](.)).
-[TODO: add link once article done]
-
-[GRAPHIC FOR NEIGHBORHOOD]
-
-[...SOME MORE ELABORATION]
-
-
-Let's look at a simple example.
-Here, we have about 40% blue agents, 40% orange agents, and 20% free cells.
-The tolerance level is set to 4, meaning that each agent prefers 4 or more agents of its own kind in its neighborhood.
+The agents are the individuals that interact in the arena.
+In this case, we have two different kinds of agents that we distribute across the grid.
+Let's call them blue and orange agents.
+Note that we don't fill the grid completely, there are empty cells left.
 
 ```{r}
 init_board <- matrix(
   sample(c(0, 1, 2), replace = TRUE, prob = c(0.1, 0.45, 0.45), size = 400),
   ncol = 20, nrow = 20
 )
-tolerance <- 4
-schelling <- schelling_game(init_board, tolerance, 300)
+df <- board_to_df(init_board)
+df$cell_id <- as.factor(1:nrow(df))
+color_scheme <- c(`0` = "white", `1` = "orange", `2` = "blue")
+grid_plot(df, 5, color_scheme)
+```
+
+Additionally to having a position in the environment, agents can have states or attributes.
+Here each agents is either *happy* or *unhappy*.
+
+
+#### Rules
+
+The rules define how agents interact with one another as well as with the environment.
+In the Schelling model, the rules are as follows:
+
+* There is a global **tolerance** level which indicates, how many agents of the same kind any agent wishes to live next to.
+* If the number of neighbors of the other kind (i.e., blue if an agent is orange and vice versa) is higher than the tolerance level allows, an agent is unhappy, otherwise it is happy.
+* The model is played in iterations (sometimes called steps, ticks, time steps, ...). In each iteration, each agent's mood is determined (happy or unhappy). Agents that are unhappy move to a random free cell.
+
+
+Environment, agents, and rules are the three essential ingredients for any ABM.
+
+
+
+The neighborhood is defined as the eight cells around the cell that an agents sits on (the [**Moore neighborhood**](.)).
+[TODO: add link once article done]
+
+
+[GRAPHIC FOR NEIGHBORHOOD]
+
+
+
+
+#### Running the Model
+
+Now that we have the setup down, let's look at a simple example.
+We randomly draw distribute 40% blue agents, 40% orange agents, and 20% free cells over the board.
+The tolerance level is set to 3, meaning that each agent prefers 4 or more agents of its own kind in its neighborhood.
+This is what happens:
+
+```{r}
+init_board <- matrix(
+  sample(c(0, 1, 2), replace = TRUE, prob = c(0.1, 0.45, 0.45), size = 400),
+  ncol = 20, nrow = 20
+)
+tolerance <- 3
+schelling <- schelling_game(init_board, tolerance, 100)
 
 color_scheme <- c(`0` = "white", `1` = "orange", `2` = "blue")
 
 anim <- schelling %>%
-  ggplot(aes(x = x, y = y, fill = state)) +
-  geom_point(size = 5, shape = 22, color = "transparent") +
-  scale_fill_manual(values = color_scheme) +
-  scale_x_continuous(minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
-  scale_y_continuous(trans = "reverse", minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
-  transition_states(step, transition_length = 1, state_length = 1) +
-  coord_fixed() +
-  theme(
-    axis.title = element_blank(),
-    axis.text = element_blank(),
-    axis.ticks = element_blank(),
-    legend.position = "none",
-    panel.background = element_rect(fill = "transparent") ,
-    panel.grid.minor = element_line(color = "lightgrey"),
-    panel.grid.major = element_line(color = "transparent"),
-    panel.border = element_rect(fill = "transparent", color = "darkgrey", size = 3)
-  )
+  grid_plot(5, color_scheme) +
+  transition_states(step, transition_length = 1, state_length = 10) +
+  labs(title = "Step: {closest_state}")
 
-animate(anim, nframes = 400, renderer = av_renderer())
+animate(anim, nframes = 200, renderer = gifski_renderer())
 ```
+
+
 
 
 
@@ -118,6 +119,28 @@ Open it and play around with the parameters.
 Can you observe some general tendencies of what happens?
 
 
+```{r}
+init_board <- matrix(
+  sample(c(0, 1, 2), replace = TRUE, prob = c(0.1, 0.45, 0.45), size = 400),
+  ncol = 20, nrow = 20
+)
+param_levels <- seq(0, 8)
+schelling_multi <- schelling_game_multi(init_board, param_levels, 100)
+
+color_scheme <- c(`0` = "white", `1` = "orange", `2` = "blue")
+
+anim <- schelling_multi %>% 
+  grid_plot(1, color_scheme) +
+  facet_wrap(. ~ tolerance, nrow = 3, strip.position = "left") +
+  theme(
+    strip.background = element_rect(fill = "white", color = "transparent"),
+    strip.text = element_text(color = "black", angle = 90)
+  ) +
+  transition_states(step, transition_length = 1, state_length = 10) +
+  labs(title = "Step: {closest_state}")
+
+animate(anim, nframes = 200, renderer = gifski_renderer())
+```
 
 
 

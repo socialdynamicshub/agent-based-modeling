@@ -61,16 +61,48 @@ schelling_game <- function(initial_state, tolerance, steps) {
   board <- initial_state
   d <- board_to_df(board) 
   d$step <- 0
+  d$cell_id <- 1:nrow(d)
   for (i in 1:steps) {
     happiness <- get_happiness_mat(board, tolerance)
     board <- move_agents(board, happiness)
     d_step <- board_to_df(board)
     d_step$step <- i
+    d_step$cell_id <- 1:nrow(d_step)
     d <- bind_rows(d, d_step)
   }
-  d <- select(d, step, x, y, state)  # TODO: switch x and y
-  d$x <- as.numeric(d$x)
-  d$y <- as.numeric(d$y)
+  d <- select(d, step, cell_id, row, col, state)
+  d$row <- as.numeric(d$row)
+  d$col <- as.numeric(d$col)
+  d$cell_id <- as.factor(d$cell_id)
   d$state <- as.factor(d$state)
+  return(d)
+}
+
+schelling_game_multi <- function(initial_state, param_levels, steps) {
+  d <- data.frame()
+  
+  for (tol in param_levels) {
+    board <- initial_state
+    d_tol <- board_to_df(board)
+    d_tol$step <- 0
+    d_tol$cell_id <- seq(1, length(board))
+    for (i in 1:steps) {
+      happiness <- get_happiness_mat(board, tol)
+      board <- move_agents(board, happiness)
+      d_tol_step <- board_to_df(board)
+      d_tol_step$step <- i
+      d_tol_step$cell_id <- seq(1, length(board))
+      d_tol <- bind_rows(d_tol, d_tol_step)
+    }
+    d_tol$row <- as.numeric(d_tol$row)
+    d_tol$col <- as.numeric(d_tol$col)
+    d_tol$cell_id <- as.factor(d_tol$cell_id)
+    d_tol$state <- as.factor(d_tol$state)
+    d_tol$tolerance <- tol
+    d_tol$tolerance <- as.numeric(d_tol$tolerance)
+    d_tol <- select(d_tol, tolerance, step, cell_id, row, col, state)
+    d <- bind_rows(d, d_tol)
+  }
+  
   return(d)
 }
