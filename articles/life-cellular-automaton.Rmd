@@ -14,6 +14,7 @@ library(tidyr)
 source("./helpers/life.R")
 source("./helpers/get_moore_neighborhood.R")
 source("./helpers/board_to_df.R")
+source("./helpers/grid_plot.R")
 set.seed(420)
 ```
 
@@ -31,26 +32,12 @@ Let' start with something small, say 20x20:
 ```{r}
 initial_state <- matrix(sample(c(0, 1), prob = c(0.8, 0.2), replace = TRUE, 400), nrow = 20, ncol = 20)
 initial_state_df <- board_to_df(initial_state)
+initial_state_df$cell_id <- 1:nrow(initial_state_df)
 
 color_scheme <- c(`0` = "white", `1` = "black")
 
 initial_state_df %>% 
-  ggplot(aes(x = x, y = y, fill = state)) +
-  geom_point(size = 5, shape = 22, color = "transparent") +
-  scale_fill_manual(values = color_scheme) +
-  scale_x_continuous(minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
-  scale_y_continuous(trans = "reverse", minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
-  coord_fixed() +
-  theme(
-    axis.title = element_blank(),
-    axis.text = element_blank(),
-    axis.ticks = element_blank(),
-    legend.position = "none",
-    panel.background = element_rect(fill = "transparent") ,
-    panel.grid.minor = element_line(color = "lightgrey"),
-    panel.grid.major = element_line(color = "transparent"),
-    panel.border = element_rect(fill = "transparent", color = "darkgrey", size = 3)
-  )
+  grid_plot(5, color_scheme)
 ```
 
 White cells are dead and black cells are alive.
@@ -82,23 +69,8 @@ game_of_life <- life_game(initial_state, 100)
 color_scheme <- c(`0` = "white", `1` = "black")
 
 anim <- game_of_life %>% 
-  ggplot(aes(x = x, y = y, fill = state)) +
-  geom_point(size = 5, shape = 22, color = "transparent") +
-  scale_fill_manual(values = color_scheme) +
-  scale_x_continuous(minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
-  scale_y_continuous(trans = "reverse", minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
-  coord_fixed() +
-  transition_states(step, transition_length = 1, state_length = 1) +
-  theme(
-    axis.title = element_blank(),
-    axis.text = element_blank(),
-    axis.ticks = element_blank(),
-    legend.position = "none",
-    panel.background = element_rect(fill = "transparent") ,
-    panel.grid.minor = element_line(color = "lightgrey"),
-    panel.grid.major = element_line(color = "transparent"),
-    panel.border = element_rect(fill = "transparent", color = "darkgrey", size = 3)
-  )
+  grid_plot(5, color_scheme) +
+  transition_states(step, transition_length = 1, state_length = 10)
 
 animate(anim, nframes = 101, renderer = gifski_renderer())
 ```
@@ -132,24 +104,9 @@ game_of_life <- life_game(initial_state, 100)
 color_scheme <- c(`0` = "white", `1` = "black")
 
 anim <- game_of_life %>% 
-  ggplot(aes(x = x, y = y, fill = state)) +
-  geom_point(size = 5, shape = 22, color = "transparent") +
-  scale_fill_manual(values = color_scheme) +
-  scale_x_continuous(minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
-  scale_y_continuous(trans = "reverse", minor_breaks = seq(0.5, 19.5, 1), breaks = seq(0, 20)) +
-  coord_fixed() +
-  transition_states(step, transition_length = 1, state_length = 1) +
-  ggtitle("A Glider in Life") +
-  theme(
-    axis.title = element_blank(),
-    axis.text = element_blank(),
-    axis.ticks = element_blank(),
-    legend.position = "none",
-    panel.background = element_rect(fill = "transparent") ,
-    panel.grid.minor = element_line(color = "lightgrey"),
-    panel.grid.major = element_line(color = "transparent"),
-    panel.border = element_rect(fill = "transparent", color = "darkgrey", size = 3),
-  )
+  grid_plot(5, color_scheme) +
+  transition_states(step, transition_length = 1, state_length = 10) +
+  ggtitle("A Glider in Life")
 
 animate(anim, nframes = 101, renderer = gifski_renderer())
 ```

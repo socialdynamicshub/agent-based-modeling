@@ -35,17 +35,20 @@ life_game <- function(initial_state, steps) {
   m <- initial_state
   d <- board_to_df(m)
   d$step <- 0
+  d$cell_id <- 1:nrow(d)
   for (i in 1:steps) {
     m_upd <- life_step(m)
     d_step <- board_to_df(m_upd)
     d_step$step <- i
+    d_step$cell_id <- 1:nrow(d_step)
     d <- bind_rows(d, d_step)
     d_step$step <- i
     m <- m_upd
   }
-  d <- select(d, step, row, col, state)
+  d <- select(d, step, cell_id, row, col, state)
   d$row <- as.numeric(d$row)
   d$col <- as.numeric(d$col)
+  d$cell_id <- as.factor(d$cell_id)
   d$state <- as.factor(d$state)
   return(d)
 }
