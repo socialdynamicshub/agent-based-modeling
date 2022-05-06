@@ -42,7 +42,6 @@ life_game <- function(initial_state, steps) {
     d_step$step <- i
     d_step$cell_id <- 1:nrow(d_step)
     d <- bind_rows(d, d_step)
-    d_step$step <- i
     m <- m_upd
   }
   d <- select(d, step, cell_id, row, col, state)

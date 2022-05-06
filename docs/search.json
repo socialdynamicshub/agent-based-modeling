@@ -16,6 +16,13 @@
       "last_modified": "2022-05-03T16:49:59+02:00"
     },
     {
+      "path": "forest-fire.html",
+      "title": "Forest Fire",
+      "author": [],
+      "contents": "\nYou can even model forest fires with agent-based modeling. Here is how.\nTake a square grid. Each cell has one of four distinct states:\nwhite = The cell is empty\ngreen = There is a tree on the cell\nred = There is a burning tree on the cell\ndark red = There is a burnt tree on the cell\nTo set up the model, we distribute trees (= green cells) over the grid and set a certain number of initial trees on fire. The effects of the model are most demonstrative, when we set the first column on fire. This means that all trees on the left of the board are on fire.\n\n\n\nIn one model step, each burning tree sets all non-burning trees in its Von Neumann neighborhood on fire. All burning trees burn out (i.e., the become “burnt” or like described above dark red).\nOne parameter that we can manipulate is the density of trees on the board. Let’s have a look at an example with a tree density of 0.7:\n\n\n\n\n\n\n",
+      "last_modified": "2022-05-06T11:54:23+02:00"
+    },
+    {
       "path": "index.html",
       "title": "Agent-Based Modeling",
       "description": "An Introduction to Agent-Based Modeling and the Property of Emergence in Complex Systems.\n",
@@ -28,7 +35,7 @@
       "title": "Conway's Life",
       "author": [],
       "contents": "\n\n\n\nThis game has first been described in a public newsletter by Martin Gardner (Gardner 1970).\nTake a square grid of sufficient size and assign each cell one of two states: alive or dead. Let’ start with something small, say 20x20:\n\n\n\nWhite cells are dead and black cells are alive.\nWe will now update the automaton one step at a time according to the following rules (Gardner 1970):\nSurvivals: Each alive cell with 2 or 3 neighbors survives into the next generation.\nDeaths: Each alive cell that has less than 2 neighbors dies from isolation. Each alive cell with 4 or more neighbors dies from overpopulation.\nBirths: Each dead cell with exactly 3 neighbors becomes alive.\nIf we talk about neighbors, we are referring to the Moore neighborhood. Note that we apply these rules to all cells simultaneously.\nSo far so good. Seems innoccuous, right?\nTask\nWhat would you expect to happen when we play this setup out over many generations?\nIn fact, this cellular automaton, called Life, displays some very complex dynamics, and, frankly, some really fancy ones.\nLet’s have a look at how the initial state shown above would play out.\n\n\n\nYou can see that there are some pulsing things, some moving things, and many more interesting emergent patterns.\nTo this day, people are hunting for these patterns. There is already a rich library of regularities and classifications on Life, some of which we will have a look at.\nGlider\nThe glider is perhaps the most infamous structure in life.\nIt looks like this:\n\n\n\nTODO:\ngliders and spaceships, oscillators, still lifes\na bit of history\nintuitive notion of emergence\nProject\nImplement Life in Julia.\n\n\n\nGardner, M. 1970. “Mathematical Games: The Fantastic Combinations of John Conway’s New Solitaire Game \"life\".” Scientific American 223 (4): 120–23.\n\n\n\n\n",
-      "last_modified": "2022-05-04T18:16:09+02:00"
+      "last_modified": "2022-05-06T11:22:12+02:00"
     },
     {
       "path": "neighborhood-relations.html",

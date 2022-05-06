@@ -1,0 +1,88 @@
+---
+title: "Forest Fire"
+output: distill::distill_article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+library(gganimate)
+source("./helpers/forest_fire.R")
+source("./helpers/grid_plot.R")
+```
+
+
+You can even model forest fires with agent-based modeling.
+Here is how.
+
+Take a square grid.
+Each cell has one of four distinct states:
+
+* `white` = The cell is empty
+* `green` = There is a tree on the cell
+* `red` = There is a burning tree on the cell
+* `dark red` = There is a burnt tree on the cell
+
+To set up the model, we distribute trees (= green cells) over the grid and set a certain number of initial trees on fire.
+The effects of the model are most demonstrative, when we set the first column on fire.
+This means that all trees on the left of the board are on fire.
+
+```{r}
+forest <- create_forest(50, 0.7)
+
+forest_fire_simulation <- forest_fire_game(forest, 200)
+
+color_scheme <- c(`0` = "white", `1` = "green", `2` = "red", `3` = "firebrick")
+
+forest_fire_simulation %>% 
+  grid_plot(2, color_scheme)
+```
+
+
+In one model step, each burning tree sets all non-burning trees in its **Von Neumann neighborhood** on fire.
+All burning trees burn out (i.e., the become "burnt" or like described above `dark red`).
+
+One parameter that we can manipulate is the density of trees on the board.
+Let's have a look at an example with a tree density of 0.7:
+
+```{r}
+forest_fire_simulation <- forest_fire_game(forest, 200)
+
+color_scheme <- c(`0` = "white", `1` = "green", `2` = "red", `3` = "firebrick")
+
+anim <- forest_fire_simulation %>% 
+  grid_plot(2, color_scheme) +
+  transition_states(step, transition_length = 1, state_length = 10)
+
+animate(anim, nframes = 201, renderer = gifski_renderer())
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
