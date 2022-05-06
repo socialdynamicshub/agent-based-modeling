@@ -10,7 +10,9 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
+* [Agent-based modeling](./agent-based-modeling.html)
 * [The Schelling model of segregation](./schelling.html)
-* [Cellular automata](./cellular-automata.html)
 * [Life](./life-cellular-automaton.html)
+* [Cellular automata](./cellular-automata.html)
+* [Forest fire](./forest-fire.html)
 * [Neighborhoods](./neighborhood-relations.html)

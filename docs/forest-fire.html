@@ -2084,13 +2084,13 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
 <div class="d-article">
-<p>You can even model forest fires with agent-based modeling. Here is how.</p>
+<p>The domains that agent-based modeling can be applied to are various. We will demonstrate this by setting a forest on fire. In a model, of course. Here is how.</p>
 <p>Take a square grid. Each cell has one of four distinct states:</p>
 <ul>
-<li><code>white</code> = The cell is empty</li>
-<li><code>green</code> = There is a tree on the cell</li>
-<li><code>red</code> = There is a burning tree on the cell</li>
-<li><code>dark red</code> = There is a burnt tree on the cell</li>
+<li><strong>white</strong> = The cell is empty</li>
+<li><strong>green</strong> = There is a tree on the cell</li>
+<li><strong>red</strong> = There is a burning tree on the cell</li>
+<li><strong>dark red</strong> = There is a burnt tree on the cell</li>
 </ul>
 <p>To set up the model, we distribute trees (= green cells) over the grid and set a certain number of initial trees on fire. The effects of the model are most demonstrative, when we set the first column on fire. This means that all trees on the left of the board are on fire.</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2100,6 +2100,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <p>One parameter that we can manipulate is the density of trees on the board. Let’s have a look at an example with a tree density of 0.7:</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="forest-fire_files/figure-html5/unnamed-chunk-2-1.gif" /><!-- --></p>
+</div>
+<p>Now let’s look what happens if we manipulate the tree density.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="forest-fire_files/figure-html5/unnamed-chunk-3-1.gif" /><!-- --></p>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="forest-fire_files/figure-html5/unnamed-chunk-4-1.gif" /><!-- --></p>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="forest-fire_files/figure-html5/unnamed-chunk-5-1.gif" /><!-- --></p>
 </div>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->

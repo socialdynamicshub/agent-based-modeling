@@ -28,13 +28,13 @@ get_happiness_mat <- function(board, tolerance) {
         next
       }
       positions <- get_moore_neighborhood(i, j, axis_size, periodic = FALSE)
-      sim_count <- 0
+      diff_count <- 0
       for (pos in positions) {
-        if (board[pos[1], pos[2]] == agent_type) {
-          sim_count <- sim_count + 1
+        if (board[pos[1], pos[2]] != agent_type) {
+          diff_count <- diff_count + 1
         }
       }
-      if (sim_count < tolerance) {
+      if (diff_count > tolerance) {
         happiness[i, j] <- 0
       }
     }

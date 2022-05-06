@@ -85,31 +85,52 @@ code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
+<style>
+  div.csl-bib-body { }
+  div.csl-entry {
+    clear: both;
+    }
+  .hanging div.csl-entry {
+    margin-left:2em;
+    text-indent:-2em;
+  }
+  div.csl-left-margin {
+    min-width:2em;
+    float:left;
+  }
+  div.csl-right-inline {
+    margin-left:2em;
+    padding-left:1em;
+  }
+  div.csl-indent {
+    margin-left: 2em;
+  }
+</style>
 
   <!--radix_placeholder_meta_tags-->
   <title>Agent-Based Modeling</title>
 
-  <meta property="description" itemprop="description" content="An Introduction to Agent-Based Modeling and the Property of Emergence in Complex Systems."/>
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
   <meta property="og:title" content="Agent-Based Modeling"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="An Introduction to Agent-Based Modeling and the Property of Emergence in Complex Systems."/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Agent-Based Modeling"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
   <meta property="twitter:title" content="Agent-Based Modeling"/>
-  <meta property="twitter:description" content="An Introduction to Agent-Based Modeling and the Property of Emergence in Complex Systems."/>
 
   <!--/radix_placeholder_meta_tags-->
+  
+  <meta name="citation_reference" content="citation_title=Growing Artificial Societies: Social Science from the Bottom Up;citation_publication_date=1996;citation_publisher=Brookings Institution Press;citation_author=J. M. Epstein;citation_author=R. Axtell"/>
+  <meta name="citation_reference" content="citation_title=Introduction to agent-based modeling: Modeling natural, social and engineered complex systems with NetLogo;citation_publication_date=2015;citation_publisher=MIT Press;citation_author=U. Wilensky;citation_author=W. Rand"/>
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","site"]}},"value":[{"type":"character","attributes":{},"value":["Agent-Based Modeling"]},{"type":"character","attributes":{},"value":["An Introduction to Agent-Based Modeling and the Property of Emergence in Complex Systems.\n"]},{"type":"character","attributes":{},"value":["distill::distill_website"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","output","bibliography"]}},"value":[{"type":"character","attributes":{},"value":["Agent-Based Modeling"]},{"type":"character","attributes":{},"value":["distill::distill_article"]},{"type":"character","attributes":{},"value":["bibliography.bib"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2057,7 +2078,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Agent-Based Modeling","description":"An Introduction to Agent-Based Modeling and the Property of Emergence in Complex Systems.","authors":[]}
+{"title":"Agent-Based Modeling","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2082,20 +2103,47 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h1>Agent-Based Modeling</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>An Introduction to Agent-Based Modeling and the Property of Emergence in Complex Systems.</p></p>
+
 </div>
 
 
 <div class="d-article">
+<p><strong>Agent-based modeling (ABM)</strong> is a technique used to model complex emergent phenomena through the simulation of local interactions. Crudely speaking, this is what you do to set up an ABM: You create a bunch of agents with some defined behavior, put them in an arena, and enjoy the show. Of course, there is more to ABM than this, but I find it a useful way to develop a basic understanding of ABM.</p>
+<p>In general, an ABM consists of three main components <span class="citation" data-cites="epstein1996growing">(<a href="#ref-epstein1996growing" role="doc-biblioref">Epstein and Axtell 1996</a>)</span>:</p>
 <ul>
-<li><a href="./agent-based-modeling.html">Agent-based modeling</a></li>
-<li><a href="./schelling.html">The Schelling model of segregation</a></li>
-<li><a href="./life-cellular-automaton.html">Life</a></li>
-<li><a href="./cellular-automata.html">Cellular automata</a></li>
-<li><a href="./forest-fire.html">Forest fire</a></li>
-<li><a href="./neighborhood-relations.html">Neighborhoods</a></li>
+<li>agents</li>
+<li>an environment</li>
+<li>rules of how agents interact with one another and their environment</li>
 </ul>
+<p>They are suited for problems where an emergent phenomenon can be explained by local interactions. Usually, in ABMs, we define behavior on an individual level (i.e., agent level), hence ABMs are sometimes also referred to as Individual-Based Models. What we want to observe, though, is effects on a “global” level (global with regard to the model).</p>
+<p>This means that ABMs are characterized by a <strong>micro and a macro level</strong>.</p>
+<p>It might be easiest to start with a totally artificial example.</p>
+<p>This is from the text book by Wilensky and Rand <span class="citation" data-cites="wilensky2015abm">(<a href="#ref-wilensky2015abm" role="doc-biblioref">Wilensky and Rand 2015</a>)</span>.</p>
+<p>Create a couple of agents. Arrange them in a circle. In each step, the agents move a little bit forward and then turn by a certain degree in such a way that they always stay on the outline of the circle.</p>
+<p>If you play this initial setup out, the agents will just move around in a circle.</p>
+<p>This is determined by the behavior that we gave the agents, namely “move a bit forward, then turn.”</p>
+<p>[CIRCLING ANIMATION]</p>
+<p>Now, we have calibrated this behavior perfectly for the agents to move in a circle. Say we increase the distance that the agents move forward by a tiny amount. What would you expect to happen?</p>
+<p>[EITHER ANIMATED GRAPHIC OR LINK TO NETLOGO LIBRARY]</p>
+<p>Would you have expected this? If you’re like me, you would have probably expected the agents to just move in a bigger circle or something along those lines.</p>
+<p>This “pulsing” that we can observe is an <strong>emergent</strong> phenomenon.</p>
+<p>Simply looking at the constituents of the system doesn’t tell us a lot. If we simply observed a single agent, we would just see it move a bit forward and then turn. Maybe we might guess, that it moves in a circle. And maybe, if you really took the time and reasoned through the entire thing carefully, you might have guessed that this “pulsing” would happen.</p>
+<p>However, this is an <em>extremely</em> simple and also a very artificial example of an ABM. Additionally, in this model, we know the agents first and have no idea about the emergent phenomenon.</p>
+<p>Usually, ABM is employed to try to find possible explanations for a well-known macro-level phenomenon by “growing” it from local interactions <span class="citation" data-cites="epstein1996growing"><a href="#ref-epstein1999generative" role="doc-biblioref">Epstein</a> (<a href="#ref-epstein1999generative" role="doc-biblioref">1999</a>)</span>.</p>
+<p>In most cases, it is virtually impossible to explain an emergent phenomenon in a system by simply thinking about it.</p>
+<p>[CONTINUE]</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-epstein1999generative" class="csl-entry" role="doc-biblioentry">
+Epstein, J. M. 1999. <span>“<span class="nocase">Agent-based Computational Models and Generative Social Science</span>.”</span> <em>Complexity</em> 4 (5): 41–60. <a href="https://doi.org/10.1002/(SICI)1099-0526(199905/06)4:5&lt;41::AID-CPLX9&gt;3.0.CO;2-F">https://doi.org/10.1002/(SICI)1099-0526(199905/06)4:5&lt;41::AID-CPLX9&gt;3.0.CO;2-F</a>.
+</div>
+<div id="ref-epstein1996growing" class="csl-entry" role="doc-biblioentry">
+Epstein, J. M., and R. Axtell. 1996. <em><span class="nocase">Growing Artificial Societies: Social Science from the Bottom Up</span></em>. Brookings Institution Press.
+</div>
+<div id="ref-wilensky2015abm" class="csl-entry" role="doc-biblioentry">
+Wilensky, U., and W. Rand. 2015. <em>Introduction to Agent-Based Modeling: Modeling Natural, Social and Engineered Complex Systems with NetLogo</em>. Cambridge, MA: MIT Press.
+</div>
+</div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
@@ -2107,7 +2155,10 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->
 <!--radix_placeholder_appendices-->
-<div class="appendix-bottom"></div>
+<div class="appendix-bottom">
+<h3 id="references">References</h3>
+<div id="references-listing"></div>
+</div>
 <!--/radix_placeholder_appendices-->
 <!--radix_placeholder_navigation_after_body-->
 <!--/radix_placeholder_navigation_after_body-->

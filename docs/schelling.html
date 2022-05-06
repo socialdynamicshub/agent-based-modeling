@@ -2109,7 +2109,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
 <div class="d-article">
-<p>The Schelling model of segregation <span class="citation" data-cites="schelling1971segregation">(<a href="#ref-schelling1971segregation" role="doc-biblioref">Schelling 1971</a>)</span> is a famous agent-based model (ABM) and it is one of the first that got a lot of attention. It addresses the tendency of ethnic segregation in urban areas.</p>
+<p>The Schelling model of segregation <span class="citation" data-cites="schelling1971segregation">(<a href="#ref-schelling1971segregation" role="doc-biblioref">Schelling 1971</a>)</span> is a famous agent-based model (ABM) that addresses ethnic segregation in urban areas.</p>
 <p>The model yielded some pretty surprising results and they will make clear what the intent of an agent-based model is.</p>
 <p>The constituents of the model are:</p>
 <h4 id="an-environment">An Environment</h4>
@@ -2132,16 +2132,20 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </ul>
 <p>Environment, agents, and rules are the three essential ingredients for any ABM.</p>
 <p>The neighborhood is defined as the eight cells around the cell that an agents sits on (the <a href="."><strong>Moore neighborhood</strong></a>). [TODO: add link once article done]</p>
-<p>[GRAPHIC FOR NEIGHBORHOOD]</p>
-<h4 id="running-the-model">Running the Model</h4>
-<p>Now that we have the setup down, let’s look at a simple example. We randomly draw distribute 40% blue agents, 40% orange agents, and 20% free cells over the board. The tolerance level is set to 3, meaning that each agent prefers 4 or more agents of its own kind in its neighborhood. This is what happens:</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="schelling_files/figure-html5/unnamed-chunk-3-1.gif" /><!-- --></p>
+<p><img src="schelling_files/figure-html5/unnamed-chunk-3-1.png" width="624" /></p>
+</div>
+<h4 id="running-the-model">Running the Model</h4>
+<p>Now that we have the setup down, let’s look at a simple example. We randomly draw distribute 40% blue agents, 40% orange agents, and 20% free cells over the board. The tolerance level is set to 3, meaning that each agent will turn unhappy if it has more than 3 neighbors that are not of its own kind.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="schelling_files/figure-html5/unnamed-chunk-4-1.gif" /><!-- --></p>
 </div>
 <h4 id="task">Task</h4>
 <p>There is a free implementation of Schelling’s model of segregation <span class="citation" data-cites="wilensky1997segretation">(<a href="#ref-wilensky1997segretation" role="doc-biblioref">Wilensky 1997</a>)</span> in the NetLogo <span class="citation" data-cites="wilensky1999netlogo">(<a href="#ref-wilensky1999netlogo" role="doc-biblioref">Wilensky 1999</a>)</span> library. Open it and play around with the parameters. Can you observe some general tendencies of what happens?</p>
+<h4 id="manipulating-the-tolerance-parameter">Manipulating the <code>tolerance</code> parameter</h4>
+<p>In the example above, we already saw that with a tolerance level of <span class="math inline">\(3\)</span>, the segregate into clusters of alike agents. What would you expect to happen for higher or lower tolerance thresholds?</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="schelling_files/figure-html5/unnamed-chunk-4-1.gif" /><!-- --></p>
+<p><img src="schelling_files/figure-html5/unnamed-chunk-5-1.gif" /><!-- --></p>
 </div>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
@@ -2162,6 +2166,15 @@ Wilensky, U. 1997. <span>“NetLogo Segregation Model.”</span> Evanston, IL: C
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->

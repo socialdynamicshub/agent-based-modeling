@@ -17,8 +17,7 @@ set.seed(420)
 ```
 
 
-The Schelling model of segregation [@schelling1971segregation] is a famous agent-based model (ABM) and it is one of the first that got a lot of attention.
-It addresses the tendency of ethnic segregation in urban areas.
+The Schelling model of segregation [@schelling1971segregation] is a famous agent-based model (ABM) that addresses ethnic segregation in urban areas.
 
 The model yielded some pretty surprising results and they will make clear what the intent of an agent-based model is.
 
@@ -78,7 +77,26 @@ The neighborhood is defined as the eight cells around the cell that an agents si
 [TODO: add link once article done]
 
 
-[GRAPHIC FOR NEIGHBORHOOD]
+```{r}
+m <- matrix(0, ncol = 10, nrow = 10)
+m[5, 5] <- 2
+neighbors <- get_moore_neighborhood(5, 5, 10)
+for (n in neighbors) {
+  m[n[1], n[2]] <- 1
+}
+
+color_scheme <- c(`0` = "white", `1` = "lightgoldenrod", `2` = "goldenrod4")
+
+m %>% 
+  board_to_df() %>% 
+  mutate(cell_id = 1:nrow(.)) %>% 
+  grid_plot(10, color_scheme) +
+  labs(
+    title = "Moore neighborhood",
+    caption = "The Moore neighborhood of the (darker) cell in the center."
+  )
+
+```
 
 
 
@@ -87,8 +105,7 @@ The neighborhood is defined as the eight cells around the cell that an agents si
 
 Now that we have the setup down, let's look at a simple example.
 We randomly draw distribute 40% blue agents, 40% orange agents, and 20% free cells over the board.
-The tolerance level is set to 3, meaning that each agent prefers 4 or more agents of its own kind in its neighborhood.
-This is what happens:
+The tolerance level is set to 3, meaning that each agent will turn unhappy if it has more than 3 neighbors that are not of its own kind.
 
 ```{r}
 init_board <- matrix(
@@ -110,14 +127,18 @@ animate(anim, nframes = 200, renderer = gifski_renderer())
 
 
 
-
-
 #### Task
 
 There is a free implementation of Schelling's model of segregation [@wilensky1997segretation] in the NetLogo [@wilensky1999netlogo] library.
 Open it and play around with the parameters.
 Can you observe some general tendencies of what happens?
 
+
+
+#### Manipulating the `tolerance` parameter
+
+In the example above, we already saw that with a tolerance level of $3$, the segregate into clusters of alike agents.
+What would you expect to happen for higher or lower tolerance thresholds?
 
 ```{r}
 init_board <- matrix(
@@ -134,7 +155,7 @@ anim <- schelling_multi %>%
   facet_wrap(. ~ tolerance, nrow = 3, strip.position = "left") +
   theme(
     strip.background = element_rect(fill = "white", color = "transparent"),
-    strip.text = element_text(color = "black", angle = 90)
+    strip.text.y = element_text(color = "black")
   ) +
   transition_states(step, transition_length = 1, state_length = 10) +
   labs(title = "Step: {closest_state}")
