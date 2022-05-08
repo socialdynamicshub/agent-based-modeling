@@ -113,6 +113,43 @@ animate(anim, nframes = 101, renderer = gifski_renderer())
 
 
 
+```{r nice-pattern}
+axis_size <- 50
+initial_state <- matrix(
+  nrow = axis_size,
+  ncol = axis_size,
+  data = rep(0, axis_size^2)
+)
+initial_state[22, 24] <- 1
+initial_state[22, 25] <- 1
+initial_state[22, 26] <- 1
+initial_state[23, 26] <- 1
+initial_state[24, 26] <- 1
+initial_state[24, 25] <- 1
+initial_state[24, 24] <- 1
+
+initial_state[22, 22] <- 1
+initial_state[22, 21] <- 1
+initial_state[22, 20] <- 1
+initial_state[23, 20] <- 1
+initial_state[24, 20] <- 1
+initial_state[24, 21] <- 1
+initial_state[24, 22] <- 1
+
+game_of_life <- life_game(initial_state, 100)
+
+color_scheme <- c(`0` = "white", `1` = "black")
+
+anim <- game_of_life %>% 
+  grid_plot(2, color_scheme) +
+  transition_states(step, transition_length = 1, state_length = 10) +
+  ggtitle("A Nice Pattern")
+
+animate(anim, nframes = 101, renderer = gifski_renderer())
+```
+
+
+
 TODO:
 
 * gliders and spaceships, oscillators, still lifes
