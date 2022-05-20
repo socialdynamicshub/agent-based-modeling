@@ -153,7 +153,7 @@ anim <- game_of_life %>%
   transition_states(step, transition_length = 1, state_length = 10) +
   ggtitle("A Nice Pattern")
 
-animate(anim, nframes = 101, res = 200, renderer = gifski_renderer())
+animate(anim, nframes = 101, res = 300, renderer = gifski_renderer())
 ```
 
 
