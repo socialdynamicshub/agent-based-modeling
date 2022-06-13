@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,9 +74,9 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
 code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
@@ -1052,10 +1053,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     margin-top: 1.5em;
   }
 
-  .figure img {
-    width: 100%;
-  }
-
   .figure .caption {
     color: rgba(0, 0, 0, 0.6);
     font-size: 12px;
@@ -1885,6 +1882,12 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
+        if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
+          var fn = $(this).children()[0]
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
         var refs = $(this).attr('data-cites').split(" ");
         var refHtml = refs.map(function(ref) {
           return "<p>" + $('#ref-' + ref).html() + "</p>";
@@ -1899,6 +1902,31 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
           placement: 'bottom-start'
         });
       });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
 
       // clear polling timer
       clearInterval(tid);
@@ -1998,6 +2026,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // mark non-body figures created by knitr chunks as 100% width
     $('.layout-chunk').each(function(i, val) {
       var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
       if ($(this).attr('data-layout') !== "l-body") {
         figures.css('width', '100%');
       } else {
@@ -2020,7 +2050,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // get rid of index.html references in header
     if (window.location.protocol !== "file:") {
       $('.distill-site-header a[href]').each(function(i,val) {
-        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
       });
     }
 
@@ -2109,54 +2139,104 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
 <div class="d-article">
-<p>The Schelling model of segregation <span class="citation" data-cites="schelling1971segregation">(<a href="#ref-schelling1971segregation" role="doc-biblioref">Schelling 1971</a>)</span> is a famous agent-based model (ABM) that addresses ethnic segregation in urban areas.</p>
-<p>The model yielded some pretty surprising results and they will make clear what the intent of an agent-based model is.</p>
+<p>The Schelling model of segregation <span class="citation"
+data-cites="schelling1971segregation">(<a
+href="#ref-schelling1971segregation" role="doc-biblioref">Schelling
+1971</a>)</span> is a famous agent-based model (ABM) that addresses
+ethnic segregation in urban areas.</p>
+<p>The model yielded some pretty surprising results and they will make
+clear what the intent of an agent-based model is.</p>
 <p>The constituents of the model are:</p>
 <h4 id="an-environment">An Environment</h4>
-<p>The environment is the “arena” in which the agents interact with one another. In the Schelling model, we use a square grid:</p>
+<p>The environment is the “arena” in which the agents interact with one
+another. In the Schelling model, we use a square grid:</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="schelling_files/figure-html5/unnamed-chunk-1-1.png" width="624" /></p>
 </div>
 <h4 id="agents">Agents</h4>
-<p>The agents are the individuals that interact in the arena. In this case, we have two different kinds of agents that we distribute across the grid. Let’s call them blue and orange agents. Note that we don’t fill the grid completely, there are empty cells left.</p>
+<p>The agents are the individuals that interact in the arena. In this
+case, we have two different kinds of agents that we distribute across
+the grid. Let’s call them blue and orange agents. Note that we don’t
+fill the grid completely, there are empty cells left.</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="schelling_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
 </div>
-<p>Additionally to having a position in the environment, agents can have states or attributes. Here each agents is either <em>happy</em> or <em>unhappy</em>.</p>
+<p>Additionally to having a position in the environment, agents can have
+states or attributes. Here each agents is either <em>happy</em> or
+<em>unhappy</em>.</p>
 <h4 id="rules">Rules</h4>
-<p>The rules define how agents interact with one another as well as with the environment. In the Schelling model, the rules are as follows:</p>
+<p>The rules define how agents interact with one another as well as with
+the environment. In the Schelling model, the rules are as follows:</p>
 <ul>
-<li>There is a global <strong>tolerance</strong> level which indicates, how many agents of the same kind any agent wishes to live next to.</li>
-<li>If the number of neighbors of the other kind (i.e., blue if an agent is orange and vice versa) is higher than the tolerance level allows, an agent is unhappy, otherwise it is happy.</li>
-<li>The model is played in iterations (sometimes called steps, ticks, time steps, …). In each iteration, each agent’s mood is determined (happy or unhappy). Agents that are unhappy move to a random free cell.</li>
+<li>There is a global <strong>tolerance</strong> level which indicates,
+how many agents of the same kind any agent wishes to live next to.</li>
+<li>If the number of neighbors of the other kind (i.e., blue if an agent
+is orange and vice versa) is higher than the tolerance level allows, an
+agent is unhappy, otherwise it is happy.</li>
+<li>The model is played in iterations (sometimes called steps, ticks,
+time steps, …). In each iteration, each agent’s mood is determined
+(happy or unhappy). Agents that are unhappy move to a random free
+cell.</li>
 </ul>
-<p>Environment, agents, and rules are the three essential ingredients for any ABM.</p>
-<p>The neighborhood is defined as the eight cells around the cell that an agents sits on (the <a href="."><strong>Moore neighborhood</strong></a>). [TODO: add link once article done]</p>
+<p>Environment, agents, and rules are the three essential ingredients
+for any ABM.</p>
+<p>The neighborhood is defined as the eight cells around the cell that
+an agents sits on (the <a href="."><strong>Moore
+neighborhood</strong></a>). [TODO: add link once article done]</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="schelling_files/figure-html5/unnamed-chunk-3-1.png" width="624" /></p>
 </div>
-<h4 id="running-the-model">Running the Model</h4>
-<p>Now that we have the setup down, let’s look at a simple example. We randomly draw distribute 40% blue agents, 40% orange agents, and 20% free cells over the board. The tolerance level is set to 3, meaning that each agent will turn unhappy if it has more than 3 neighbors that are not of its own kind.</p>
+<h2 id="running-the-model">Running the Model</h2>
+<p>Now that we have the setup down, let’s look at a simple example. We
+randomly draw distribute 45% blue agents, 45% orange agents, and 10%
+free cells over the board. The tolerance level is set to 3, meaning that
+each agent will turn unhappy if it has more than 3 neighbors that are
+not of its own kind.</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="schelling_files/figure-html5/unnamed-chunk-4-1.gif" /><!-- --></p>
+<p><img
+src="schelling_files/figure-html5/unnamed-chunk-4-1.gif" /><!-- --></p>
 </div>
 <h4 id="task">Task</h4>
-<p>There is a free implementation of Schelling’s model of segregation <span class="citation" data-cites="wilensky1997segretation">(<a href="#ref-wilensky1997segretation" role="doc-biblioref">Wilensky 1997</a>)</span> in the NetLogo <span class="citation" data-cites="wilensky1999netlogo">(<a href="#ref-wilensky1999netlogo" role="doc-biblioref">Wilensky 1999</a>)</span> library. Open it and play around with the parameters. Can you observe some general tendencies of what happens?</p>
-<h4 id="manipulating-the-tolerance-parameter">Manipulating the <code>tolerance</code> parameter</h4>
-<p>In the example above, we already saw that with a tolerance level of <span class="math inline">\(3\)</span>, the segregate into clusters of alike agents. What would you expect to happen for higher or lower tolerance thresholds?</p>
+<p>There is a free implementation of Schelling’s model of segregation
+<span class="citation" data-cites="wilensky1997segretation">(<a
+href="#ref-wilensky1997segretation" role="doc-biblioref">Wilensky
+1997</a>)</span> in the NetLogo <span class="citation"
+data-cites="wilensky1999netlogo">(<a href="#ref-wilensky1999netlogo"
+role="doc-biblioref">Wilensky 1999</a>)</span> library. Open it and play
+around with the parameters. Can you observe some general tendencies of
+what happens?</p>
+<h2 id="manipulating-the-tolerance-parameter">Manipulating the
+<code>tolerance</code> parameter</h2>
+<p>In the example above, we already saw that with a tolerance level of
+<span class="math inline">\(3\)</span>, the segregate into clusters of
+alike agents. What would you expect to happen for higher or lower
+tolerance thresholds?</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="schelling_files/figure-html5/unnamed-chunk-5-1.gif" /><!-- --></p>
+<p><img
+src="schelling_files/figure-html5/unnamed-chunk-5-1.gif" /><!-- --></p>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-schelling1971segregation" class="csl-entry" role="doc-biblioentry">
-Schelling, Thomas C. 1971. <span>“Dynamic Models of Segregation.”</span> <em>The Journal of Mathematical Sociology</em> 1 (2): 143–86. <a href="https://doi.org/10.1080/0022250X.1971.9989794">https://doi.org/10.1080/0022250X.1971.9989794</a>.
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div id="refs" class="references csl-bib-body hanging-indent"
+role="doc-bibliography">
+<div id="ref-schelling1971segregation" class="csl-entry"
+role="doc-biblioentry">
+Schelling, Thomas C. 1971. <span>“Dynamic Models of Segregation.”</span>
+<em>The Journal of Mathematical Sociology</em> 1 (2): 143–86. <a
+href="https://doi.org/10.1080/0022250X.1971.9989794">https://doi.org/10.1080/0022250X.1971.9989794</a>.
 </div>
-<div id="ref-wilensky1997segretation" class="csl-entry" role="doc-biblioentry">
-Wilensky, U. 1997. <span>“NetLogo Segregation Model.”</span> Evanston, IL: Center for Connected Learning; Computer-Based Modeling, Northwestern University. <a href="http://ccl.northwestern.edu/netlogo/models/Segregation">http://ccl.northwestern.edu/netlogo/models/Segregation</a>.
+<div id="ref-wilensky1997segretation" class="csl-entry"
+role="doc-biblioentry">
+Wilensky, U. 1997. <span>“NetLogo Segregation Model.”</span> Evanston,
+IL: Center for Connected Learning; Computer-Based Modeling, Northwestern
+University. <a
+href="http://ccl.northwestern.edu/netlogo/models/Segregation">http://ccl.northwestern.edu/netlogo/models/Segregation</a>.
 </div>
-<div id="ref-wilensky1999netlogo" class="csl-entry" role="doc-biblioentry">
-———. 1999. <span>“NetLogo.”</span> Evanston, IL: Center for Connected Learning; Computer-Based Modeling, Northwestern University. <a href="http://ccl.northwestern.edu/netlogo/">http://ccl.northwestern.edu/netlogo/</a>.
+<div id="ref-wilensky1999netlogo" class="csl-entry"
+role="doc-biblioentry">
+———. 1999. <span>“NetLogo.”</span> Evanston, IL: Center for Connected
+Learning; Computer-Based Modeling, Northwestern University. <a
+href="http://ccl.northwestern.edu/netlogo/">http://ccl.northwestern.edu/netlogo/</a>.
 </div>
 </div>
 <!--radix_placeholder_article_footer-->

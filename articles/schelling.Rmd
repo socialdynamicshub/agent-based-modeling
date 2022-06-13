@@ -9,10 +9,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library(ggplot2)
 library(gganimate)
 library(dplyr)
-source("./helpers/board_to_df.R")
-source("./helpers/get_moore_neighborhood.R")
-source("./helpers/schelling.R")
-source("./helpers/grid_plot.R")
+library(gridabm)
 set.seed(420)
 ```
 
@@ -29,12 +26,8 @@ The environment is the "arena" in which the agents interact with one another.
 In the Schelling model, we use a square grid:
 
 ```{r}
-axis_size <- 20
-board <- matrix(0, nrow = axis_size, ncol = axis_size)
-df <- board_to_df(board)
-df$cell_id <- as.factor(1:nrow(df))
-color_scheme <- c(`0` = "white")
-grid_plot(df, 5, color_scheme)
+matrix(0, nrow = 20, ncol = 20) %>% 
+  plot_state(5, c("white"))
 ```
 
 #### Agents
@@ -49,10 +42,7 @@ init_board <- matrix(
   sample(c(0, 1, 2), replace = TRUE, prob = c(0.1, 0.45, 0.45), size = 400),
   ncol = 20, nrow = 20
 )
-df <- board_to_df(init_board)
-df$cell_id <- as.factor(1:nrow(df))
-color_scheme <- c(`0` = "white", `1` = "orange", `2` = "blue")
-grid_plot(df, 5, color_scheme)
+plot_state(init_board, 5, theme_schelling())
 ```
 
 Additionally to having a position in the environment, agents can have states or attributes.
@@ -78,33 +68,27 @@ The neighborhood is defined as the eight cells around the cell that an agents si
 
 
 ```{r}
-m <- matrix(0, ncol = 10, nrow = 10)
+m <- matrix(0, ncol = 9, nrow = 9)
 m[5, 5] <- 2
-neighbors <- get_moore_neighborhood(5, 5, 10)
+neighbors <- get_moore_neighborhood(5, 5, 9)
 for (n in neighbors) {
   m[n[1], n[2]] <- 1
 }
-
-color_scheme <- c(`0` = "white", `1` = "lightgoldenrod", `2` = "goldenrod4")
-
 m %>% 
-  board_to_df() %>% 
-  mutate(cell_id = 1:nrow(.)) %>% 
-  grid_plot(10, color_scheme) +
+  plot_state(12, c("white", "grey80", "grey20")) +
   labs(
     title = "Moore neighborhood",
     caption = "The Moore neighborhood of the (darker) cell in the center."
   )
-
 ```
 
 
 
 
-#### Running the Model
+## Running the Model
 
 Now that we have the setup down, let's look at a simple example.
-We randomly draw distribute 40% blue agents, 40% orange agents, and 20% free cells over the board.
+We randomly draw distribute 45% blue agents, 45% orange agents, and 10% free cells over the board.
 The tolerance level is set to 3, meaning that each agent will turn unhappy if it has more than 3 neighbors that are not of its own kind.
 
 ```{r}
@@ -112,16 +96,10 @@ init_board <- matrix(
   sample(c(0, 1, 2), replace = TRUE, prob = c(0.1, 0.45, 0.45), size = 400),
   ncol = 20, nrow = 20
 )
-tolerance <- 3
-schelling <- schelling_game(init_board, tolerance, 100)
-
-color_scheme <- c(`0` = "white", `1` = "orange", `2` = "blue")
-
+schelling <- run_automaton(init_board, 100, schelling_step, tolerance = 3)
 anim <- schelling %>%
-  grid_plot(5, color_scheme) +
-  transition_states(step, transition_length = 1, state_length = 10) +
+  animate_model_run(5, theme_schelling()) +
   labs(title = "Step: {closest_state}")
-
 animate(anim, nframes = 200, renderer = gifski_renderer())
 ```
 
@@ -135,31 +113,30 @@ Can you observe some general tendencies of what happens?
 
 
 
-#### Manipulating the `tolerance` parameter
+## Manipulating the `tolerance` parameter
 
 In the example above, we already saw that with a tolerance level of $3$, the segregate into clusters of alike agents.
 What would you expect to happen for higher or lower tolerance thresholds?
 
-```{r}
+```{r, fig.width=12, fig.height=12}
 init_board <- matrix(
   sample(c(0, 1, 2), replace = TRUE, prob = c(0.1, 0.45, 0.45), size = 400),
   ncol = 20, nrow = 20
 )
-param_levels <- seq(0, 8)
-schelling_multi <- schelling_game_multi(init_board, param_levels, 100)
-
-color_scheme <- c(`0` = "white", `1` = "orange", `2` = "blue")
-
-anim <- schelling_multi %>% 
-  grid_plot(1, color_scheme) +
-  facet_wrap(. ~ tolerance, nrow = 3, strip.position = "left") +
+d <- data.frame()
+for (tol in seq(0, 8)) {
+  res_tmp <- run_automaton(init_board, 100, schelling_step, tolerance = tol)
+  res_tmp$tol <- tol
+  d <- bind_rows(d, res_tmp)
+}
+anim <- d %>% 
+  animate_model_run(0.7, theme_schelling()) +
+  facet_wrap(. ~ tol, nrow = 3, strip.position = "left") +
   theme(
     strip.background = element_rect(fill = "white", color = "transparent"),
-    strip.text.y = element_text(color = "black")
+    strip.text.y = element_text(color = "black", angle = 90)
   ) +
-  transition_states(step, transition_length = 1, state_length = 10) +
   labs(title = "Step: {closest_state}")
-
 animate(anim, nframes = 200, renderer = gifski_renderer())
 ```
 
