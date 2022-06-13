@@ -12,16 +12,12 @@ library(magick)
 library(dplyr)
 library(tidyr)
 library(readr)
-source("./helpers/life.R")
-source("./helpers/get_moore_neighborhood.R")
-source("./helpers/board_to_df.R")
-source("./helpers/grid_plot.R")
+library(gridabm)
+# source("./helpers/life.R")
+# source("./helpers/get_moore_neighborhood.R")
+# source("./helpers/board_to_df.R")
+# source("./helpers/grid_plot.R")
 set.seed(420)
-```
-
-```{r notes}
-# NOTE: visualization with ggplot currently flips the board
-#       -> maybe fix in visualization
 ```
 
 
@@ -30,17 +26,12 @@ This game has first been described in a public newsletter by Martin Gardner [@ga
 Take a square grid of sufficient size and assign each cell one of two states: alive or dead.
 Let' start with something small, say 20x20:
 
-```{r}
-initial_state <- matrix(
+```{r life-grid-setup}
+matrix(
   sample(c(0, 1), prob = c(0.8, 0.2), replace = TRUE, 400),
   nrow = 20, ncol = 20
-)
-
-color_scheme <- c(`0` = "white", `1` = "black")
-
-board_to_df(initial_state) %>% 
-  mutate(cell_id = 1:nrow(.)) %>% 
-  grid_plot(5, color_scheme)
+) %>% 
+  plot_state(marker_size = 5, color_scheme = theme_life())
 ```
 
 White cells are dead and black cells are alive.
@@ -51,34 +42,37 @@ We will now update the automaton one step at a time according to the following r
 * Deaths: Each alive cell that has less than 2 neighbors dies from isolation. Each alive cell with 4 or more neighbors dies from overpopulation.
 * Births: Each dead cell with exactly 3 neighbors becomes alive.
 
-If we talk about neighbors, we are referring to the Moore neighborhood.
+If we talk about neighbors, we are referring to the [Moore neighborhood](.) [TODO: add link to article].
 Note that we apply these rules to all cells **simultaneously**.
 
 So far so good.
 Seems innoccuous, right?
 
+
+
 #### Task
 
-What would you expect to happen when we play this setup out over many generations?
-
+What would you expect to happen when we run this setup for many time steps?
 
 In fact, this cellular automaton, called *Life*, displays some very complex dynamics, and, frankly, some really fancy ones.
 
 Let's have a look at how the initial state shown above would play out.
 
 ```{r full-game}
+initial_state <- matrix(
+  sample(c(0, 1), prob = c(0.8, 0.2), replace = TRUE, 400),
+  nrow = 20, ncol = 20
+)
+
 if (!file.exists(file.path(".", "data", "full-conways-life.rds"))) {
-  conways_life <- life_game(initial_state, 100)
+  conways_life <- run_automaton(initial_state, 100, life_step)
   write_rds(conways_life, file.path(".", "data", "full-conways-life.rds"))
 } else {
   conways_life <- read_rds(file.path(".", "data", "full-conways-life.rds"))
 }
 
-color_scheme <- c(`0` = "white", `1` = "black")
-
 anim <- conways_life %>% 
-  grid_plot(5, color_scheme) +
-  transition_states(step, transition_length = 1, state_length = 10)
+  animate_model_run(marker_size = 5, color_scheme = theme_life())
 
 animate(anim, nframes = 101, renderer = gifski_renderer())
 ```
@@ -88,6 +82,8 @@ You can see that there are some pulsing things, some moving things, and many mor
 To this day, people are hunting for these patterns.
 There is already a rich library of regularities and classifications on *Life*, some of which we will have a look at.
 
+
+
 ### Glider
 
 The **glider** is perhaps the most infamous structure in *life*.
@@ -96,38 +92,29 @@ It looks like this:
 
 ```{r glider}
 axis_size <- 20
-initial_state <- matrix(
-  nrow = axis_size,
-  ncol = axis_size,
-  data = rep(0, axis_size^2)
-)
+initial_state <- matrix(0, nrow = axis_size, ncol = axis_size)
 initial_state[3, 1] <- 1
 initial_state[3, 2] <- 1
 initial_state[3, 3] <- 1
 initial_state[2, 3] <- 1
 initial_state[1, 2] <- 1
 
-game_of_life <- life_game(initial_state, 100)
+glider <- run_automaton(initial_state, 100, life_step)
 
-color_scheme <- c(`0` = "white", `1` = "black")
+anim <- glider %>% 
+  animate_model_run(5, theme_life()) +
+  ggtitle("Glider")
 
-anim <- game_of_life %>% 
-  grid_plot(5, color_scheme) +
-  transition_states(step, transition_length = 1, state_length = 10) +
-  ggtitle("A Glider in Life")
-
-animate(anim, nframes = 101, renderer = gifski_renderer())
+animate(anim, nframes = 200, renderer = gifski_renderer())
 ```
 
 
 
 ```{r nice-pattern}
 axis_size <- 50
-initial_state <- matrix(
-  nrow = axis_size,
-  ncol = axis_size,
-  data = rep(0, axis_size^2)
-)
+
+initial_state <- matrix(0, nrow = axis_size, ncol = axis_size)
+
 initial_state[22, 24] <- 1
 initial_state[22, 25] <- 1
 initial_state[22, 26] <- 1
@@ -144,16 +131,17 @@ initial_state[24, 20] <- 1
 initial_state[24, 21] <- 1
 initial_state[24, 22] <- 1
 
-game_of_life <- life_game(initial_state, 100)
+nice_pattern <- run_automaton(initial_state, 100, life_step)
 
-color_scheme <- c(`0` = "white", `1` = "black")
+anim <- nice_pattern %>% 
+  animate_model_run(1.3, theme_life()) +
+  ggtitle("No Name, but it's Nice") +
+  theme(
+    panel.grid.minor.x = element_line(color = "transparent"),
+    panel.grid.minor.y = element_line(color = "transparent")
+  )
 
-anim <- game_of_life %>% 
-  grid_plot(2, color_scheme) +
-  transition_states(step, transition_length = 1, state_length = 10) +
-  ggtitle("A Nice Pattern")
-
-animate(anim, nframes = 101, renderer = gifski_renderer())
+animate(anim, nframes = 200, renderer = gifski_renderer())
 ```
 
 
