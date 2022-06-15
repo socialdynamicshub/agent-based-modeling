@@ -5,26 +5,27 @@ bibliography: bibliography.bib
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
 library(ggplot2)
 library(gganimate)
-library(magick)
+library(gridExtra)
+library(grid)
+library(ggpubr)
+# library(magick)
 library(dplyr)
 library(tidyr)
-library(readr)
+# library(readr)
 library(gridabm)
-# source("./helpers/life.R")
-# source("./helpers/get_moore_neighborhood.R")
-# source("./helpers/board_to_df.R")
-# source("./helpers/grid_plot.R")
 set.seed(420)
 ```
 
 
-This game has first been described in a public newsletter by Martin Gardner [@gardner1970mathematical].
+Conway's Life is a cellular automaton that has captured the imagination of thousands.
+It was discovered by the mathematician John Conway and made known to a wider audience for the first time in a public newsletter on mathematical games by Martin Gardner [@gardner1970mathematical].
+*Life* is an amazing demonstration of how great complexity can arise from very simple rules.
 
-Take a square grid of sufficient size and assign each cell one of two states: alive or dead.
-Let' start with something small, say 20x20:
+The automaton runs an a square lattice and each cell has one of two distinct states: alive or dead.
+We can visualize this by assigning the color white to dead cells and the color black to alive cells to get something like this:
 
 ```{r life-grid-setup}
 matrix(
@@ -34,81 +35,85 @@ matrix(
   plot_state(marker_size = 5, color_scheme = theme_life())
 ```
 
-White cells are dead and black cells are alive.
+In cellular automata, a cell's next state is a function of the states of its neighboring cells' states.
+For *Life*, we define an update function that takes the states of the [Moore neighborhood](./neighborhood-relations.html) as input.
+The rules [@gardner1970mathematical] look deceptively simple:
 
-We will now update the automaton one step at a time according to the following rules [@gardner1970mathematical]:
+* **Survivals**: Each alive cell with 2 or 3 neighbors survives into the next generation.
+* **Deaths**: Each alive cell that has less than 2 neighbors dies from isolation. Each alive cell with 4 or more neighbors dies from overpopulation.
+* **Births**: Each dead cell with exactly 3 neighbors becomes alive.
 
-* Survivals: Each alive cell with 2 or 3 neighbors survives into the next generation.
-* Deaths: Each alive cell that has less than 2 neighbors dies from isolation. Each alive cell with 4 or more neighbors dies from overpopulation.
-* Births: Each dead cell with exactly 3 neighbors becomes alive.
-
-If we talk about neighbors, we are referring to the [Moore neighborhood](.) [TODO: add link to article].
-Note that we apply these rules to all cells **simultaneously**.
-
-So far so good.
-Seems innoccuous, right?
-
-
+To update the automaton, we simply apply these rules to each cell **simultaneously**.
 
 #### Task
 
+Look at the following two states of the Life automaton.
+The one on the right is the *successor* of the one on the left (the state after applying the life rule once).
+Verify for a couple of cells that the rules above were applied.
 What would you expect to happen when we run this setup for many time steps?
 
-In fact, this cellular automaton, called *Life*, displays some very complex dynamics, and, frankly, some really fancy ones.
+Note that the grid "wraps around", meaning that we're dealing with a [torus](https://en.wikipedia.org/wiki/Torus).
 
-Let's have a look at how the initial state shown above would play out.
-
-```{r full-game}
-initial_state <- matrix(
+```{r, fig.align='center'}
+a <- matrix(
   sample(c(0, 1), prob = c(0.8, 0.2), replace = TRUE, 400),
   nrow = 20, ncol = 20
 )
 
-if (!file.exists(file.path(".", "data", "full-conways-life.rds"))) {
-  conways_life <- run_automaton(initial_state, 100, life_step)
-  write_rds(conways_life, file.path(".", "data", "full-conways-life.rds"))
-} else {
-  conways_life <- read_rds(file.path(".", "data", "full-conways-life.rds"))
-}
+b <- life_step(a)
+
+p1 <- plot_state(a, marker_size = 3.5, color_scheme = theme_life()) +
+  ggtitle("State 0")
+p2 <- plot_state(b, marker_size = 3.5, color_scheme = theme_life()) +
+  ggtitle("State 1")
+grid.arrange(arrangeGrob(p1, p2, layout_matrix = rbind(c(1, 1, 2, 2))), ncol = 1)
+```
+
+
+## Complex Patterns in Conway's Life
+
+Let's have a look at how the initial state shown above would play out.
+
+```{r full-game}
+conways_life <- run_automaton(a, 200, life_step)
 
 anim <- conways_life %>% 
   animate_model_run(marker_size = 5, color_scheme = theme_life())
 
-animate(anim, nframes = 101, renderer = gifski_renderer())
+animate(anim, nframes = 201, renderer = gifski_renderer())
 ```
 
-You can see that there are some pulsing things, some moving things, and many more interesting emergent patterns.
 
-To this day, people are hunting for these patterns.
-There is already a rich library of regularities and classifications on *Life*, some of which we will have a look at.
+You can see that there are some structures that move around, some that are stationary, some that exhibit a sort of "pulsing", and much more.
+Mathematicians, researchers, and hobbyists have been on the hunt for these patterns for decades and there is a rich library of patterns that have been in the process^[For instance, check out the [*LifeWiki*](https://conwaylife.com/wiki/) where many of those patterns are documented.].
 
+There are many fascinating things to discover in Conway's Life.
+For instance, this setup ...
 
-
-### Glider
-
-The **glider** is perhaps the most infamous structure in *life*.
-
-It looks like this:
-
-```{r glider}
-axis_size <- 20
+```{r nice-pattern-demo}
+axis_size <- 9
 initial_state <- matrix(0, nrow = axis_size, ncol = axis_size)
-initial_state[3, 1] <- 1
-initial_state[3, 2] <- 1
-initial_state[3, 3] <- 1
-initial_state[2, 3] <- 1
-initial_state[1, 2] <- 1
 
-glider <- run_automaton(initial_state, 100, life_step)
+initial_state[4, 4] <- 1
+initial_state[4, 3] <- 1
+initial_state[4, 2] <- 1
+initial_state[5, 2] <- 1
+initial_state[6, 2] <- 1
+initial_state[6, 3] <- 1
+initial_state[6, 4] <- 1
 
-anim <- glider %>% 
-  animate_model_run(5, theme_life()) +
-  ggtitle("Glider")
+initial_state[4, 6] <- 1
+initial_state[4, 7] <- 1
+initial_state[4, 8] <- 1
+initial_state[5, 8] <- 1
+initial_state[6, 8] <- 1
+initial_state[6, 7] <- 1
+initial_state[6, 6] <- 1
 
-animate(anim, nframes = 200, renderer = gifski_renderer())
+initial_state %>% plot_state(12, theme_life())
 ```
 
-
+... generates this pattern:
 
 ```{r nice-pattern}
 axis_size <- 50
@@ -134,29 +139,226 @@ initial_state[24, 22] <- 1
 nice_pattern <- run_automaton(initial_state, 100, life_step)
 
 anim <- nice_pattern %>% 
-  animate_model_run(1.3, theme_life()) +
-  ggtitle("No Name, but it's Nice") +
-  theme(
-    panel.grid.minor.x = element_line(color = "transparent"),
-    panel.grid.minor.y = element_line(color = "transparent")
-  )
+  animate_model_run(1.5, theme_life())
 
 animate(anim, nframes = 200, renderer = gifski_renderer())
 ```
 
 
 
-TODO:
 
-* gliders and spaceships, oscillators, still lifes
-* a bit of history
-* intuitive notion of emergence
+## Some Pattern Classes in Conway's Life
+
+Many patterns in Life exhibit similar properties which is why they have been summarized in classes.
+The ones described below do not nearly constitute an exhaustive description of those classes.
+
+### Spaceships
+
+Yes, you read correctly.
+Spaceships are a class of periodic patterns that "move" across the grid.
+One of the simplest ones (and perhaps the most infamous structure in Life altogether) is the so-called **Glider**.
+
+It looks like this:
+
+```{r glider}
+axis_size <- 20
+initial_state <- matrix(0, nrow = axis_size, ncol = axis_size)
+initial_state[3, 1] <- 1
+initial_state[3, 2] <- 1
+initial_state[3, 3] <- 1
+initial_state[2, 3] <- 1
+initial_state[1, 2] <- 1
+
+glider <- run_automaton(initial_state, 80, life_step)
+
+anim <- glider %>% 
+  animate_model_run(5, theme_life()) +
+  ggtitle("Glider")
+
+animate(anim, nframes = 161, renderer = gifski_renderer())
+```
+
+The Glider replicates every four steps displaced diagonally by 1.
+In the following graphic, you can see that the Glider replicates the same pattern every two steps, but mirrored on the diagonal.
+
+```{r, fig.width=8, fig.height=2}
+initial_state <- t(
+  matrix(
+    c(
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 1, 0, 0, 0, 0, 0),
+      c(0, 1, 0, 1, 0, 0, 0, 0, 0),
+      c(0, 0, 1, 1, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0)
+    ),
+    nrow = 9
+  )
+)  
+
+iter_1 <- life_step(initial_state)
+iter_2 <- life_step(iter_1)
+iter_3 <- life_step(iter_2)
+iter_4 <- life_step(iter_3)
+
+p1 <-  plot_state(initial_state, 3.5, theme_life())
+p2 <-  plot_state(iter_1, 3.5, theme_life())
+p3 <-  plot_state(iter_2, 3.5, theme_life())
+p4 <-  plot_state(iter_3, 3.5, theme_life())
+p5 <-  plot_state(iter_4, 3.5, theme_life())
+
+grid.arrange(p1, p2, p3, p4, p5, nrow = 1)
+```
+
+Just to give you a taste of what a more complex spaceship in Life looks like, this is a so-called **Canada Goose** [@lifewiki2021canadagoose]:
+
+```{r}
+pattern <- t(
+  matrix(
+    c(
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0),
+      c(0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0),
+      c(0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0),
+      c(0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    ),
+    nrow = 15
+  )
+) 
+initial_state <- matrix(0, nrow = 30, ncol = 30)
+initial_state[16:30, 16:30] <- pattern
+
+results <- run_automaton(initial_state, 100, life_step)
+anim <- animate_model_run(results, 3, theme_life())
+animate(anim, nframes = 101)
+```
+
+With a little bit of imagination, you can see why it's called a Canada Goose...
 
 
 
+### Oscillators
+
+We have seen that spaceships are patterns that replicate displaced by some amount on the grid, giving them the impression of "moving" across the grid.
+Oscillators do the same thing, but in-place, or in other words, they are their own predecessors [@lifewiki2022oscillator].
+
+The simplest oscillator is called a **Blinker** [@lifewiki2022blinker]:
+
+```{r}
+pattern <- t(
+  matrix(
+    c(
+      c(0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 1, 0, 0, 0),
+      c(0, 0, 0, 1, 0, 0, 0),
+      c(0, 0, 0, 1, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0)
+    ),
+    nrow = 7
+  )
+) 
+results <- run_automaton(pattern, 16, life_step)
+anim <- animate_model_run(results, 15, theme_life())
+animate(anim, nframes = 17)
+```
+
+
+This one is called a **Pulsar** [@lifewiki2022pulsar]:
+
+```{r}
+pattern <- t(
+  matrix(
+    c(
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0),
+      c(0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0),
+      c(0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0),
+      c(0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0),
+      c(0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0),
+      c(0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0),
+      c(0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    ),
+    nrow = 15
+  )
+)
+initial_state <- matrix(0, nrow = 21, ncol = 21)
+initial_state[4:18, 4:18] <- pattern
+
+results <- run_automaton(initial_state, 72, life_step)
+anim <- animate_model_run(results, 4.5, theme_life())
+animate(anim, nframes = 73)
+```
+
+And finally, this one is called a **Pinwheel** [@lifewiki2021pinwheel]:
+
+```{r}
+pattern <- t(
+  matrix(
+    c(
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0),
+      c(0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0),
+      c(0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    ),
+    nrow = 16
+  )
+)
+
+results <- run_automaton(pattern, 72, life_step)
+anim <- animate_model_run(results, 5.5, theme_life())
+animate(anim, nframes = 73)
+```
 
 
 
-#### Project
+## Conclusion
 
-Implement *Life* in Julia.
+There are countless more patterns and pattern classes like these.
+If you want to take a deeper look into this automaton, check out the [LifeWiki](https://conwaylife.com/wiki) which has great resources on the topic.
+For the purposes of this course, this article is intended to give you an intuitive notion of the term "emergence".
+As you saw throughout this article, the simple rules of the Life automaton imply amounts of complexity that can fill books and perhaps an entire encyclopedia.
+
+For a very rich collection of resources on Conway's Life, check out [this website](https://conwaylife.com/).
+
+
+#### Project Ideas
+
+Implementing Life is not that difficult and a great way for beginners to learn programming.
+Try implementing *Life* in a programming language of your choosing.
+
+You can also check out the [`gridabm` R library](https://github.com/socialdynamicshub/gridabm) which contains an implementation of Life^[The graphics and animations in this article were generated with the `gridabm` library.]
+

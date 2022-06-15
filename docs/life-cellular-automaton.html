@@ -127,6 +127,11 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_meta_tags-->
   
   <meta name="citation_reference" content="citation_title=Mathematical Games: The Fantastic Combinations of John Conway’s New Solitaire Game &quot;life&quot;;citation_publication_date=1970;citation_publisher=Nature Publishing Group;citation_volume=223;citation_author=M. Gardner"/>
+  <meta name="citation_reference" content="citation_title=Canada goose;citation_publication_date=2021;citation_author= LifeWiki"/>
+  <meta name="citation_reference" content="citation_title=Oscillator;citation_publication_date=2022;citation_author= LifeWiki"/>
+  <meta name="citation_reference" content="citation_title=Blinker;citation_publication_date=2022;citation_author= LifeWiki"/>
+  <meta name="citation_reference" content="citation_title=Pulsar;citation_publication_date=2022;citation_author= LifeWiki"/>
+  <meta name="citation_reference" content="citation_title=Pinwheel;citation_publication_date=2021;citation_author= LifeWiki"/>
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
@@ -2137,69 +2142,157 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
 <div class="d-article">
-<p>This game has first been described in a public newsletter by Martin
-Gardner <span class="citation" data-cites="gardner1970mathematical">(<a
+<p>Conway’s Life is a cellular automaton that has captured the
+imagination of thousands. It was discovered by the mathematician John
+Conway and made known to a wider audience for the first time in a public
+newsletter on mathematical games by Martin Gardner <span
+class="citation" data-cites="gardner1970mathematical">(<a
 href="#ref-gardner1970mathematical" role="doc-biblioref">Gardner
-1970</a>)</span>.</p>
-<p>Take a square grid of sufficient size and assign each cell one of two
-states: alive or dead. Let’ start with something small, say 20x20:</p>
+1970</a>)</span>. <em>Life</em> is an amazing demonstration of how great
+complexity can arise from very simple rules.</p>
+<p>The automaton runs an a square lattice and each cell has one of two
+distinct states: alive or dead. We can visualize this by assigning the
+color white to dead cells and the color black to alive cells to get
+something like this:</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="life-cellular-automaton_files/figure-html5/life-grid-setup-1.png" width="624" /></p>
 </div>
-<p>White cells are dead and black cells are alive.</p>
-<p>We will now update the automaton one step at a time according to the
-following rules <span class="citation"
+<p>In cellular automata, a cell’s next state is a function of the states
+of its neighboring cells’ states. For <em>Life</em>, we define an update
+function that takes the states of the <a
+href="./neighborhood-relations.html">Moore neighborhood</a> as input.
+The rules <span class="citation"
 data-cites="gardner1970mathematical">(<a
 href="#ref-gardner1970mathematical" role="doc-biblioref">Gardner
-1970</a>)</span>:</p>
+1970</a>)</span> look deceptively simple:</p>
 <ul>
-<li>Survivals: Each alive cell with 2 or 3 neighbors survives into the
-next generation.</li>
-<li>Deaths: Each alive cell that has less than 2 neighbors dies from
-isolation. Each alive cell with 4 or more neighbors dies from
-overpopulation.</li>
-<li>Births: Each dead cell with exactly 3 neighbors becomes alive.</li>
+<li><strong>Survivals</strong>: Each alive cell with 2 or 3 neighbors
+survives into the next generation.</li>
+<li><strong>Deaths</strong>: Each alive cell that has less than 2
+neighbors dies from isolation. Each alive cell with 4 or more neighbors
+dies from overpopulation.</li>
+<li><strong>Births</strong>: Each dead cell with exactly 3 neighbors
+becomes alive.</li>
 </ul>
-<p>If we talk about neighbors, we are referring to the <a href=".">Moore
-neighborhood</a> [TODO: add link to article]. Note that we apply these
-rules to all cells <strong>simultaneously</strong>.</p>
-<p>So far so good. Seems innoccuous, right?</p>
+<p>To update the automaton, we simply apply these rules to each cell
+<strong>simultaneously</strong>.</p>
 <h4 id="task">Task</h4>
-<p>What would you expect to happen when we run this setup for many time
-steps?</p>
-<p>In fact, this cellular automaton, called <em>Life</em>, displays some
-very complex dynamics, and, frankly, some really fancy ones.</p>
+<p>Look at the following two states of the Life automaton. The one on
+the right is the <em>successor</em> of the one on the left (the state
+after applying the life rule once). Verify for a couple of cells that
+the rules above were applied. What would you expect to happen when we
+run this setup for many time steps?</p>
+<p>Note that the grid “wraps around”, meaning that we’re dealing with a
+<a href="https://en.wikipedia.org/wiki/Torus">torus</a>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="life-cellular-automaton_files/figure-html5/unnamed-chunk-1-1.png" width="624" style="display: block; margin: auto;" /></p>
+</div>
+<h2 id="complex-patterns-in-conways-life">Complex Patterns in Conway’s
+Life</h2>
 <p>Let’s have a look at how the initial state shown above would play
 out.</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img
 src="life-cellular-automaton_files/figure-html5/full-game-1.gif" /><!-- --></p>
 </div>
-<p>You can see that there are some pulsing things, some moving things,
-and many more interesting emergent patterns.</p>
-<p>To this day, people are hunting for these patterns. There is already
-a rich library of regularities and classifications on <em>Life</em>,
-some of which we will have a look at.</p>
-<h3 id="glider">Glider</h3>
-<p>The <strong>glider</strong> is perhaps the most infamous structure in
-<em>life</em>.</p>
+<p>You can see that there are some structures that move around, some
+that are stationary, some that exhibit a sort of “pulsing”, and much
+more. Mathematicians, researchers, and hobbyists have been on the hunt
+for these patterns for decades and there is a rich library of patterns
+that have been in the process<a href="#fn1" class="footnote-ref"
+id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>There are many fascinating things to discover in Conway’s Life. For
+instance, this setup …</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="life-cellular-automaton_files/figure-html5/nice-pattern-demo-1.png" width="624" /></p>
+</div>
+<p>… generates this pattern:</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img
+src="life-cellular-automaton_files/figure-html5/nice-pattern-1.gif" /><!-- --></p>
+</div>
+<h2 id="some-pattern-classes-in-conways-life">Some Pattern Classes in
+Conway’s Life</h2>
+<p>Many patterns in Life exhibit similar properties which is why they
+have been summarized in classes. The ones described below do not nearly
+constitute an exhaustive description of those classes.</p>
+<h3 id="spaceships">Spaceships</h3>
+<p>Yes, you read correctly. Spaceships are a class of periodic patterns
+that “move” across the grid. One of the simplest ones (and perhaps the
+most infamous structure in Life altogether) is the so-called
+<strong>Glider</strong>.</p>
 <p>It looks like this:</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img
 src="life-cellular-automaton_files/figure-html5/glider-1.gif" /><!-- --></p>
 </div>
+<p>The Glider replicates every four steps displaced diagonally by 1. In
+the following graphic, you can see that the Glider replicates the same
+pattern every two steps, but mirrored on the diagonal.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="life-cellular-automaton_files/figure-html5/unnamed-chunk-2-1.png" width="768" /></p>
+</div>
+<p>Just to give you a taste of what a more complex spaceship in Life
+looks like, this is a so-called <strong>Canada Goose</strong> <span
+class="citation" data-cites="lifewiki2021canadagoose">(<a
+href="#ref-lifewiki2021canadagoose" role="doc-biblioref">LifeWiki
+2021a</a>)</span>:</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img
-src="life-cellular-automaton_files/figure-html5/nice-pattern-1.gif" /><!-- --></p>
+src="life-cellular-automaton_files/figure-html5/unnamed-chunk-3-1.gif" /><!-- --></p>
 </div>
-<p>TODO:</p>
-<ul>
-<li>gliders and spaceships, oscillators, still lifes</li>
-<li>a bit of history</li>
-<li>intuitive notion of emergence</li>
-</ul>
-<h4 id="project">Project</h4>
-<p>Implement <em>Life</em> in Julia.</p>
+<p>With a little bit of imagination, you can see why it’s called a
+Canada Goose…</p>
+<h3 id="oscillators">Oscillators</h3>
+<p>We have seen that spaceships are patterns that replicate displaced by
+some amount on the grid, giving them the impression of “moving” across
+the grid. Oscillators do the same thing, but in-place, or in other
+words, they are their own predecessors <span class="citation"
+data-cites="lifewiki2022oscillator">(<a
+href="#ref-lifewiki2022oscillator" role="doc-biblioref">LifeWiki
+2022b</a>)</span>.</p>
+<p>The simplest oscillator is called a <strong>Blinker</strong> <span
+class="citation" data-cites="lifewiki2022blinker">(<a
+href="#ref-lifewiki2022blinker" role="doc-biblioref">LifeWiki
+2022a</a>)</span>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img
+src="life-cellular-automaton_files/figure-html5/unnamed-chunk-4-1.gif" /><!-- --></p>
+</div>
+<p>This one is called a <strong>Pulsar</strong> <span class="citation"
+data-cites="lifewiki2022pulsar">(<a href="#ref-lifewiki2022pulsar"
+role="doc-biblioref">LifeWiki 2022c</a>)</span>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img
+src="life-cellular-automaton_files/figure-html5/unnamed-chunk-5-1.gif" /><!-- --></p>
+</div>
+<p>And finally, this one is called a <strong>Pinwheel</strong> <span
+class="citation" data-cites="lifewiki2021pinwheel">(<a
+href="#ref-lifewiki2021pinwheel" role="doc-biblioref">LifeWiki
+2021b</a>)</span>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img
+src="life-cellular-automaton_files/figure-html5/unnamed-chunk-6-1.gif" /><!-- --></p>
+</div>
+<h2 id="conclusion">Conclusion</h2>
+<p>There are countless more patterns and pattern classes like these. If
+you want to take a deeper look into this automaton, check out the <a
+href="https://conwaylife.com/wiki">LifeWiki</a> which has great
+resources on the topic. For the purposes of this course, this article is
+intended to give you an intuitive notion of the term “emergence”. As you
+saw throughout this article, the simple rules of the Life automaton
+imply amounts of complexity that can fill books and perhaps an entire
+encyclopedia.</p>
+<p>For a very rich collection of resources on Conway’s Life, check out
+<a href="https://conwaylife.com/">this website</a>.</p>
+<h4 id="project-ideas">Project Ideas</h4>
+<p>Implementing Life is not that difficult and a great way for beginners
+to learn programming. Try implementing <em>Life</em> in a programming
+language of your choosing.</p>
+<p>You can also check out the <a
+href="https://github.com/socialdynamicshub/gridabm"><code>gridabm</code>
+R library</a> which contains an implementation of Life<a href="#fn2"
+class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <div id="refs" class="references csl-bib-body hanging-indent"
@@ -2210,7 +2303,45 @@ Gardner, M. 1970. <span>“<span class="nocase">Mathematical Games: The
 Fantastic Combinations of John Conway’s New Solitaire Game
 "life"</span>.”</span> <em>Scientific American</em> 223 (4): 120–23.
 </div>
+<div id="ref-lifewiki2021canadagoose" class="csl-entry"
+role="doc-biblioentry">
+LifeWiki. 2021a. <span>“Canada Goose.”</span> <a
+href="https://conwaylife.com/wiki/Canada_goose">https://conwaylife.com/wiki/Canada_goose</a>.
 </div>
+<div id="ref-lifewiki2021pinwheel" class="csl-entry"
+role="doc-biblioentry">
+———. 2021b. <span>“Pinwheel.”</span> <a
+href="https://conwaylife.com/wiki/Pinwheel">https://conwaylife.com/wiki/Pinwheel</a>.
+</div>
+<div id="ref-lifewiki2022blinker" class="csl-entry"
+role="doc-biblioentry">
+———. 2022a. <span>“Blinker.”</span> <a
+href="https://conwaylife.com/wiki/Blinker">https://conwaylife.com/wiki/Blinker</a>.
+</div>
+<div id="ref-lifewiki2022oscillator" class="csl-entry"
+role="doc-biblioentry">
+———. 2022b. <span>“Oscillator.”</span> <a
+href="https://conwaylife.com/wiki/Oscillator">https://conwaylife.com/wiki/Oscillator</a>.
+</div>
+<div id="ref-lifewiki2022pulsar" class="csl-entry"
+role="doc-biblioentry">
+———. 2022c. <span>“Pulsar.”</span> <a
+href="https://conwaylife.com/wiki/Pulsar">https://conwaylife.com/wiki/Pulsar</a>.
+</div>
+</div>
+<section class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>For instance, check out the <a
+href="https://conwaylife.com/wiki/"><em>LifeWiki</em></a> where many of
+those patterns are documented.<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>The graphics and animations in this
+article were generated with the <code>gridabm</code> library.<a
+href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
