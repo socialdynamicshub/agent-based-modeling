@@ -41,8 +41,8 @@
       "title": "Agent-Based Modeling",
       "description": "An Introduction to Agent-Based Modeling and the Property of Emergence in Complex Systems.\n",
       "author": [],
-      "contents": "\nAgent-based modeling\nThe Schelling model of\nsegregation\nLife\nCellular automata\nForest fire\nNeighborhoods\n\n\n\n",
-      "last_modified": "2022-06-15T15:22:45+02:00"
+      "contents": "\nCellular automata\nLife\nThe Schelling model of\nsegregation\nForest fire\nAgent-based modeling\nNeighborhoods\n\n\n\n",
+      "last_modified": "2022-06-15T17:41:12+02:00"
     },
     {
       "path": "neighborhood-relations.html",
