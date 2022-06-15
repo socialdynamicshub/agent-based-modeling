@@ -5,7 +5,7 @@ bibliography: bibliography.bib
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
 library(ggplot2)
 library(gganimate)
 library(dplyr)
@@ -14,28 +14,51 @@ set.seed(420)
 ```
 
 
-The Schelling model of segregation [@schelling1971segregation] is a famous agent-based model (ABM) that addresses ethnic segregation in urban areas.
+One of the earliest agent-based models was devised in 1971 by Thomas Schelling [@schelling1971segregation].
+It pioneered many of the paradigms that constitute agent-based modeling today.
+As you will see, this model is very reminiscent of the 2D cellular automata that we looked at before, but the "cells" are explicitly anthropomorphized, bridging the gap to thinking about them as *agents*.
+In [Conway's Life](./conways-life.html), you saw that the update rules were loosely metaphorical for social phenomena ("survivals", "births", "deaths", "isolation", "overpopulation", etc.).
+We may never know how much inspiration Schelling took from the contemporary movement of hobbyists analyzing Conway's Life, but the time was ripe for the paradigm of agent-based modeling.
 
-The model yielded some pretty surprising results and they will make clear what the intent of an agent-based model is.
+Schelling's model addressed the phenomenon of ethnic segregation in urban areas.
+In the 1970s, when this paper was published, residential segregation between people of different ethnicities was very pronounced in the US and efforts to alleviate this problem were slow.
+Schelling's model of segregation assumes agents with very simple behavior to leverage some insights into why segregation proved so difficult to reverse.
 
-The constituents of the model are:
 
-#### An Environment
 
-The environment is the "arena" in which the agents interact with one another.
-In the Schelling model, we use a square grid:
+## The Constituents of the Model
+
+The Schelling model is constituted by three general components^[As are all agent-based models, more or less [@epstein1996growing].]:
+agents, an environment, and rules according to which agents interact with each other and with the environment.
+We will go through the model components one by one to develop an intuitive understanding of agent-based models and how they are built.
+
+
+
+### The Environment
+
+Let's start with the environment of the Schelling model.
+The *environment* is the "arena" in which the agents interact with one another.
+In the Schelling model, we use a square grid, just like the one that we used in [Conway's Life](./conways-life.html):
 
 ```{r}
 matrix(0, nrow = 20, ncol = 20) %>% 
   plot_state(5, c("white"))
 ```
 
-#### Agents
+There are many more options when choosing how to represent an environment in your model, though.
+For instance, you can put your agents on a graph and let them move around over its edges, you can create a continuous plane where agents move around in two dimensions, or you could even create virtual 3D worlds with a physics engine.
+The choice of environment depends heavily on the objective of the model.
+In the case of the Schelling model, the grid represents urban areas in the US "closely enough".
+A good general rule of thumb is to make the model as simple as possible to retain its explanatory power^[That applies not only to the model environment, but to all components of the model.].
 
-The agents are the individuals that interact in the arena.
-In this case, we have two different kinds of agents that we distribute across the grid.
-Let's call them blue and orange agents.
-Note that we don't fill the grid completely, there are empty cells left.
+
+
+### Agents
+
+The most important unit of an agent-based model are, of course, the *agents*.
+The agents are the individuals that interact in the arena that we set up with our environment.
+In the simplest configuration of the Schelling model, we have two different kinds of agents that we distribute randomly across the grid, leaving a certain percentage of cells empty so that the agents can move around.
+Let's call the two agent types blue and orange agents.
 
 ```{r}
 init_board <- matrix(
@@ -45,27 +68,20 @@ init_board <- matrix(
 plot_state(init_board, 5, theme_schelling())
 ```
 
-Additionally to having a position in the environment, agents can have states or attributes.
-Here each agents is either *happy* or *unhappy*.
-
-
-#### Rules
-
-The rules define how agents interact with one another as well as with the environment.
-In the Schelling model, the rules are as follows:
-
-* There is a global **tolerance** level which indicates, how many agents of the same kind any agent wishes to live next to.
-* If the number of neighbors of the other kind (i.e., blue if an agent is orange and vice versa) is higher than the tolerance level allows, an agent is unhappy, otherwise it is happy.
-* The model is played in iterations (sometimes called steps, ticks, time steps, ...). In each iteration, each agent's mood is determined (happy or unhappy). Agents that are unhappy move to a random free cell.
-
-
-Environment, agents, and rules are the three essential ingredients for any ABM.
 
 
 
-The neighborhood is defined as the eight cells around the cell that an agents sits on (the [**Moore neighborhood**](.)).
-[TODO: add link once article done]
+### Update Rule or Stepping Function
 
+The update rules define how agents interact with one another and with the environment.
+As we measure "time" in agent-based models as discrete time steps, update rules are sometimes referred to as *stepping functions* or *step functions*.
+In the Schelling model, the update rules are very simple:
+
+* First, we set a global **tolerance** level which indicates, how many agents of the other kind an agent is willing to tolerate in its neighborhood.
+* Then, we check for each agent whether the number of agents of the other kind in its neighborhood^[I.e., blue if an agent is orange and vice versa.] exceeds the tolerance level that we set globally for the model.
+* All agents for which the tolerance level is exceeded relocate to a random free position on the grid.
+
+Note that we define an agent's neighborhood as its [**Moore neighborhood**](./neighborhood-relations.html).
 
 ```{r}
 m <- matrix(0, ncol = 9, nrow = 9)
@@ -87,35 +103,64 @@ m %>%
 
 ## Running the Model
 
-Now that we have the setup down, let's look at a simple example.
-We randomly draw distribute 45% blue agents, 45% orange agents, and 10% free cells over the board.
-The tolerance level is set to 3, meaning that each agent will turn unhappy if it has more than 3 neighbors that are not of its own kind.
+Let's look at a simple example of how this model plays out over time.
+We randomly distribute blue and orange agents in equal proportion over the grid, leaving 10&nbsp;% of the cells free.
+The tolerance level is set to 4, meaning that each agent will relocate if it has more than 3 neighbors that are *not* of its own kind.
+
+Having a tolerance for up to 4 out of 8 neighbors of the other kind doesn't sound that intolerant.
+One might assume that all the agents are willing to live in completely mixed neighborhoods, constituted of approximately 50&nbsp;% agents of each kind.
+This is not what happens, though:
 
 ```{r}
 init_board <- matrix(
   sample(c(0, 1, 2), replace = TRUE, prob = c(0.1, 0.45, 0.45), size = 400),
   ncol = 20, nrow = 20
 )
-schelling <- run_automaton(init_board, 100, schelling_step, tolerance = 3)
+schelling <- run_automaton(init_board, 200, schelling_step, tolerance = 4)
 anim <- schelling %>%
   animate_model_run(5, theme_schelling()) +
   labs(title = "Step: {closest_state}")
-animate(anim, nframes = 200, renderer = gifski_renderer())
+animate(anim, nframes = 401, renderer = gifski_renderer())
 ```
 
+As you can see, the agents quickly for homogeneous clusters of blue and orange agents and the agents on the fringes of those clusters keep moving around frantically.
+We can even observe this effect (although slightly weaker) when agents are willing to live in a neighborhood with a majority of agents of the other kind.
+This is how the model turns out for $tolerance = 5$
+
+```{r}
+init_board <- matrix(
+  sample(c(0, 1, 2), replace = TRUE, prob = c(0.1, 0.45, 0.45), size = 400),
+  ncol = 20, nrow = 20
+)
+schelling <- run_automaton(init_board, 200, schelling_step, tolerance = 5)
+anim <- schelling %>%
+  animate_model_run(5, theme_schelling()) +
+  labs(title = "Step: {closest_state}")
+animate(anim, nframes = 401, renderer = gifski_renderer())
+```
+
+
+Even with seemingly high tolerance levels, agents cluster into areas of alike agents which mimics the phenomenon of ethnic segregation that Schelling and his contemporaries were trying to solve.
+This is the main finding from this model, but by far not the only one.
+There are several parameters that we can manipulate to systematically analyze how this system behaves.
+However, before we move on to analyze this model systematically, it is first important to get a feel of what it means to manipulate a system parameter in an agent-based model.
 
 
 #### Task
 
-There is a free implementation of Schelling's model of segregation [@wilensky1997segretation] in the NetLogo [@wilensky1999netlogo] library.
+There is a [free implementation of Schelling's model](http://netlogoweb.org/launch#http://netlogoweb.org/assets/modelslib/Sample%20Models/Social%20Science/Segregation.nlogo) [@wilensky1997segretation] in the [NetLogo](https://ccl.northwestern.edu/netlogo/) [@wilensky1999netlogo] library.
 Open it and play around with the parameters.
-Can you observe some general tendencies of what happens?
+Can you observe some general tendencies when you manipulate the tolerance parameter?
+
+Alternatively to NetLogo, you can use the [`gridabm` framework](https://github.com/socialdynamicshub/gridabm) for [R](https://www.r-project.org/) which was also used to generate the animations and plots for this article.
 
 
 
-## Manipulating the `tolerance` parameter
+## Manipulating the Tolerance Parameter
 
-In the example above, we already saw that with a tolerance level of $3$, the segregate into clusters of alike agents.
+[TODO: write/edit]
+
+In the example above, we already saw that with a tolerance level of $3$, the segregation into clusters of alike agents.
 What would you expect to happen for higher or lower tolerance thresholds?
 
 ```{r, fig.width=12, fig.height=12}

@@ -109,31 +109,33 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Agent-Based Modeling: The Schelling Model of Segregation</title>
+  <title>Agent-Based Modeling: Conway's Life</title>
 
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Agent-Based Modeling: The Schelling Model of Segregation"/>
+  <meta property="og:title" content="Agent-Based Modeling: Conway&#39;s Life"/>
   <meta property="og:type" content="article"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Agent-Based Modeling"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Agent-Based Modeling: The Schelling Model of Segregation"/>
+  <meta property="twitter:title" content="Agent-Based Modeling: Conway&#39;s Life"/>
 
   <!--/radix_placeholder_meta_tags-->
   
-  <meta name="citation_reference" content="citation_title=Dynamic models of segregation;citation_publication_date=1971;citation_publisher=Routledge;citation_volume=1;citation_doi=10.1080/0022250X.1971.9989794;citation_author=Thomas C. Schelling"/>
-  <meta name="citation_reference" content="citation_title=NetLogo;citation_publication_date=1999;citation_publisher=Center for Connected Learning; Computer-Based Modeling, Northwestern University;citation_author=U. Wilensky"/>
-  <meta name="citation_reference" content="citation_title=NetLogo segregation model;citation_publication_date=1997;citation_publisher=Center for Connected Learning; Computer-Based Modeling, Northwestern University;citation_author=U. Wilensky"/>
-  <meta name="citation_reference" content="citation_title=Growing Artificial Societies: Social Science from the Bottom Up;citation_publication_date=1996;citation_publisher=Brookings Institution Press;citation_author=J. M. Epstein;citation_author=R. Axtell"/>
+  <meta name="citation_reference" content="citation_title=Mathematical Games: The Fantastic Combinations of John Conway’s New Solitaire Game &quot;life&quot;;citation_publication_date=1970;citation_publisher=Nature Publishing Group;citation_volume=223;citation_author=M. Gardner"/>
+  <meta name="citation_reference" content="citation_title=Canada goose;citation_publication_date=2021;citation_author= LifeWiki"/>
+  <meta name="citation_reference" content="citation_title=Oscillator;citation_publication_date=2022;citation_author= LifeWiki"/>
+  <meta name="citation_reference" content="citation_title=Blinker;citation_publication_date=2022;citation_author= LifeWiki"/>
+  <meta name="citation_reference" content="citation_title=Pulsar;citation_publication_date=2022;citation_author= LifeWiki"/>
+  <meta name="citation_reference" content="citation_title=Pinwheel;citation_publication_date=2021;citation_author= LifeWiki"/>
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","output","bibliography"]}},"value":[{"type":"character","attributes":{},"value":["The Schelling Model of Segregation"]},{"type":"character","attributes":{},"value":["distill::distill_article"]},{"type":"character","attributes":{},"value":["bibliography.bib"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","output","bibliography"]}},"value":[{"type":"character","attributes":{},"value":["Conway's Life"]},{"type":"character","attributes":{},"value":["distill::distill_article"]},{"type":"character","attributes":{},"value":["bibliography.bib"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2110,7 +2112,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"The Schelling Model of Segregation","authors":[]}
+{"title":"Conway's Life","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2132,7 +2134,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>The Schelling Model of Segregation</h1>
+<h1>Conway’s Life</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
 
@@ -2140,197 +2142,204 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
 <div class="d-article">
-<p>One of the earliest agent-based models was devised in 1971 by Thomas
-Schelling <span class="citation"
-data-cites="schelling1971segregation">(<a
-href="#ref-schelling1971segregation" role="doc-biblioref">Schelling
-1971</a>)</span>. It pioneered many of the paradigms that constitute
-agent-based modeling today. As you will see, this model is very
-reminiscent of the 2D cellular automata that we looked at before, but
-the “cells” are explicitly anthropomorphized, bridging the gap to
-thinking about them as <em>agents</em>. In <a
-href="./conways-life.html">Conway’s Life</a>, you saw that the update
-rules were loosely metaphorical for social phenomena (“survivals”,
-“births”, “deaths”, “isolation”, “overpopulation”, etc.). We may never
-know how much inspiration Schelling took from the contemporary movement
-of hobbyists analyzing Conway’s Life, but the time was ripe for the
-paradigm of agent-based modeling.</p>
-<p>Schelling’s model addressed the phenomenon of ethnic segregation in
-urban areas. In the 1970s, when this paper was published, residential
-segregation between people of different ethnicities was very pronounced
-in the US and efforts to alleviate this problem were slow. Schelling’s
-model of segregation assumes agents with very simple behavior to
-leverage some insights into why segregation proved so difficult to
-reverse.</p>
-<h2 id="the-constituents-of-the-model">The Constituents of the
-Model</h2>
-<p>The Schelling model is constituted by three general components<a
-href="#fn1" class="footnote-ref" id="fnref1"
-role="doc-noteref"><sup>1</sup></a>: agents, an environment, and rules
-according to which agents interact with each other and with the
-environment. We will go through the model components one by one to
-develop an intuitive understanding of agent-based models and how they
-are built.</p>
-<h3 id="the-environment">The Environment</h3>
-<p>Let’s start with the environment of the Schelling model. The
-<em>environment</em> is the “arena” in which the agents interact with
-one another. In the Schelling model, we use a square grid, just like the
-one that we used in <a href="./conways-life.html">Conway’s Life</a>:</p>
+<p>Conway’s Life is a cellular automaton that has captured the
+imagination of thousands. It was discovered by the mathematician John
+Conway and made known to a wider audience for the first time in a public
+newsletter on mathematical games by Martin Gardner <span
+class="citation" data-cites="gardner1970mathematical">(<a
+href="#ref-gardner1970mathematical" role="doc-biblioref">Gardner
+1970</a>)</span>. <em>Life</em> is an amazing demonstration of how great
+complexity can arise from very simple rules.</p>
+<p>The automaton runs an a square lattice and each cell has one of two
+distinct states: alive or dead. We can visualize this by assigning the
+color white to dead cells and the color black to alive cells to get
+something like this:</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="schelling_files/figure-html5/unnamed-chunk-1-1.png" width="624" /></p>
+<p><img src="conways-life_files/figure-html5/life-grid-setup-1.png" width="624" /></p>
 </div>
-<p>There are many more options when choosing how to represent an
-environment in your model, though. For instance, you can put your agents
-on a graph and let them move around over its edges, you can create a
-continuous plane where agents move around in two dimensions, or you
-could even create virtual 3D worlds with a physics engine. The choice of
-environment depends heavily on the objective of the model. In the case
-of the Schelling model, the grid represents urban areas in the US
-“closely enough”. A good general rule of thumb is to make the model as
-simple as possible to retain its explanatory power<a href="#fn2"
-class="footnote-ref" id="fnref2"
-role="doc-noteref"><sup>2</sup></a>.</p>
-<h3 id="agents">Agents</h3>
-<p>The most important unit of an agent-based model are, of course, the
-<em>agents</em>. The agents are the individuals that interact in the
-arena that we set up with our environment. In the simplest configuration
-of the Schelling model, we have two different kinds of agents that we
-distribute randomly across the grid, leaving a certain percentage of
-cells empty so that the agents can move around. Let’s call the two agent
-types blue and orange agents.</p>
-<div class="layout-chunk" data-layout="l-body">
-<p><img src="schelling_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
-</div>
-<h3 id="update-rule-or-stepping-function">Update Rule or Stepping
-Function</h3>
-<p>The update rules define how agents interact with one another and with
-the environment. As we measure “time” in agent-based models as discrete
-time steps, update rules are sometimes referred to as <em>stepping
-functions</em> or <em>step functions</em>. In the Schelling model, the
-update rules are very simple:</p>
+<p>In cellular automata, a cell’s next state is a function of the states
+of its neighboring cells’ states. For <em>Life</em>, we define an update
+function that takes the states of the <a
+href="./neighborhood-relations.html">Moore neighborhood</a> as input.
+The rules <span class="citation"
+data-cites="gardner1970mathematical">(<a
+href="#ref-gardner1970mathematical" role="doc-biblioref">Gardner
+1970</a>)</span> look deceptively simple:</p>
 <ul>
-<li>First, we set a global <strong>tolerance</strong> level which
-indicates, how many agents of the other kind an agent is willing to
-tolerate in its neighborhood.</li>
-<li>Then, we check for each agent whether the number of agents of the
-other kind in its neighborhood<a href="#fn3" class="footnote-ref"
-id="fnref3" role="doc-noteref"><sup>3</sup></a> exceeds the tolerance
-level that we set globally for the model.</li>
-<li>All agents for which the tolerance level is exceeded relocate to a
-random free position on the grid.</li>
+<li><strong>Survivals</strong>: Each alive cell with 2 or 3 neighbors
+survives into the next generation.</li>
+<li><strong>Deaths</strong>: Each alive cell that has less than 2
+neighbors dies from isolation. Each alive cell with 4 or more neighbors
+dies from overpopulation.</li>
+<li><strong>Births</strong>: Each dead cell with exactly 3 neighbors
+becomes alive.</li>
 </ul>
-<p>Note that we define an agent’s neighborhood as its <a
-href="./neighborhood-relations.html"><strong>Moore
-neighborhood</strong></a>.</p>
-<div class="layout-chunk" data-layout="l-body">
-<p><img src="schelling_files/figure-html5/unnamed-chunk-3-1.png" width="624" /></p>
-</div>
-<h2 id="running-the-model">Running the Model</h2>
-<p>Let’s look at a simple example of how this model plays out over time.
-We randomly distribute blue and orange agents in equal proportion over
-the grid, leaving 10 % of the cells free. The tolerance level is set to
-4, meaning that each agent will relocate if it has more than 3 neighbors
-that are <em>not</em> of its own kind.</p>
-<p>Having a tolerance for up to 4 out of 8 neighbors of the other kind
-doesn’t sound that intolerant. One might assume that all the agents are
-willing to live in completely mixed neighborhoods, constituted of
-approximately 50 % agents of each kind. This is not what happens,
-though:</p>
-<div class="layout-chunk" data-layout="l-body">
-<p><img
-src="schelling_files/figure-html5/unnamed-chunk-4-1.gif" /><!-- --></p>
-</div>
-<p>As you can see, the agents quickly for homogeneous clusters of blue
-and orange agents and the agents on the fringes of those clusters keep
-moving around frantically. We can even observe this effect (although
-slightly weaker) when agents are willing to live in a neighborhood with
-a majority of agents of the other kind. This is how the model turns out
-for <span class="math inline">\(tolerance = 5\)</span></p>
-<div class="layout-chunk" data-layout="l-body">
-<p><img
-src="schelling_files/figure-html5/unnamed-chunk-5-1.gif" /><!-- --></p>
-</div>
-<p>Even with seemingly high tolerance levels, agents cluster into areas
-of alike agents which mimics the phenomenon of ethnic segregation that
-Schelling and his contemporaries were trying to solve. This is the main
-finding from this model, but by far not the only one. There are several
-parameters that we can manipulate to systematically analyze how this
-system behaves. However, before we move on to analyze this model
-systematically, it is first important to get a feel of what it means to
-manipulate a system parameter in an agent-based model.</p>
+<p>To update the automaton, we simply apply these rules to each cell
+<strong>simultaneously</strong>.</p>
 <h4 id="task">Task</h4>
-<p>There is a <a
-href="http://netlogoweb.org/launch#http://netlogoweb.org/assets/modelslib/Sample%20Models/Social%20Science/Segregation.nlogo">free
-implementation of Schelling’s model</a> <span class="citation"
-data-cites="wilensky1997segretation">(<a
-href="#ref-wilensky1997segretation" role="doc-biblioref">Wilensky
-1997</a>)</span> in the <a
-href="https://ccl.northwestern.edu/netlogo/">NetLogo</a> <span
-class="citation" data-cites="wilensky1999netlogo">(<a
-href="#ref-wilensky1999netlogo" role="doc-biblioref">Wilensky
-1999</a>)</span> library. Open it and play around with the parameters.
-Can you observe some general tendencies when you manipulate the
-tolerance parameter?</p>
-<p>Alternatively to NetLogo, you can use the <a
-href="https://github.com/socialdynamicshub/gridabm"><code>gridabm</code>
-framework</a> for <a href="https://www.r-project.org/">R</a> which was
-also used to generate the animations and plots for this article.</p>
-<h2 id="manipulating-the-tolerance-parameter">Manipulating the Tolerance
-Parameter</h2>
-<p>[TODO: write/edit]</p>
-<p>In the example above, we already saw that with a tolerance level of
-<span class="math inline">\(3\)</span>, the segregation into clusters of
-alike agents. What would you expect to happen for higher or lower
-tolerance thresholds?</p>
+<p>Look at the following two states of the Life automaton. The one on
+the right is the <em>successor</em> of the one on the left (the state
+after applying the life rule once). Verify for a couple of cells that
+the rules above were applied. What would you expect to happen when we
+run this setup for many time steps?</p>
+<p>Note that the grid “wraps around”, meaning that we’re dealing with a
+<a href="https://en.wikipedia.org/wiki/Torus">torus</a>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="conways-life_files/figure-html5/unnamed-chunk-1-1.png" width="624" style="display: block; margin: auto;" /></p>
+</div>
+<h2 id="complex-patterns-in-conways-life">Complex Patterns in Conway’s
+Life</h2>
+<p>Let’s have a look at how the initial state shown above would play
+out.</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img
-src="schelling_files/figure-html5/unnamed-chunk-6-1.gif" /><!-- --></p>
+src="conways-life_files/figure-html5/full-game-1.gif" /><!-- --></p>
 </div>
+<p>You can see that there are some structures that move around, some
+that are stationary, some that exhibit a sort of “pulsing”, and much
+more. Mathematicians, researchers, and hobbyists have been on the hunt
+for these patterns for decades and there is a rich library of patterns
+that have been in the process<a href="#fn1" class="footnote-ref"
+id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>There are many fascinating things to discover in Conway’s Life. For
+instance, this setup …</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="conways-life_files/figure-html5/nice-pattern-demo-1.png" width="624" /></p>
+</div>
+<p>… generates this pattern:</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img
+src="conways-life_files/figure-html5/nice-pattern-1.gif" /><!-- --></p>
+</div>
+<h2 id="some-pattern-classes-in-conways-life">Some Pattern Classes in
+Conway’s Life</h2>
+<p>Many patterns in Life exhibit similar properties which is why they
+have been summarized in classes. The ones described below do not nearly
+constitute an exhaustive description of those classes.</p>
+<h3 id="spaceships">Spaceships</h3>
+<p>Yes, you read correctly. Spaceships are a class of periodic patterns
+that “move” across the grid. One of the simplest ones (and perhaps the
+most infamous structure in Life altogether) is the so-called
+<strong>Glider</strong>.</p>
+<p>It looks like this:</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img
+src="conways-life_files/figure-html5/glider-1.gif" /><!-- --></p>
+</div>
+<p>The Glider replicates every four steps displaced diagonally by 1. In
+the following graphic, you can see that the Glider replicates the same
+pattern every two steps, but mirrored on the diagonal.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="conways-life_files/figure-html5/unnamed-chunk-2-1.png" width="768" /></p>
+</div>
+<p>Just to give you a taste of what a more complex spaceship in Life
+looks like, this is a so-called <strong>Canada Goose</strong> <span
+class="citation" data-cites="lifewiki2021canadagoose">(<a
+href="#ref-lifewiki2021canadagoose" role="doc-biblioref">LifeWiki
+2021a</a>)</span>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img
+src="conways-life_files/figure-html5/unnamed-chunk-3-1.gif" /><!-- --></p>
+</div>
+<p>With a little bit of imagination, you can see why it’s called a
+Canada Goose…</p>
+<h3 id="oscillators">Oscillators</h3>
+<p>We have seen that spaceships are patterns that replicate displaced by
+some amount on the grid, giving them the impression of “moving” across
+the grid. Oscillators do the same thing, but in-place, or in other
+words, they are their own predecessors <span class="citation"
+data-cites="lifewiki2022oscillator">(<a
+href="#ref-lifewiki2022oscillator" role="doc-biblioref">LifeWiki
+2022b</a>)</span>.</p>
+<p>The simplest oscillator is called a <strong>Blinker</strong> <span
+class="citation" data-cites="lifewiki2022blinker">(<a
+href="#ref-lifewiki2022blinker" role="doc-biblioref">LifeWiki
+2022a</a>)</span>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img
+src="conways-life_files/figure-html5/unnamed-chunk-4-1.gif" /><!-- --></p>
+</div>
+<p>This one is called a <strong>Pulsar</strong> <span class="citation"
+data-cites="lifewiki2022pulsar">(<a href="#ref-lifewiki2022pulsar"
+role="doc-biblioref">LifeWiki 2022c</a>)</span>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img
+src="conways-life_files/figure-html5/unnamed-chunk-5-1.gif" /><!-- --></p>
+</div>
+<p>And finally, this one is called a <strong>Pinwheel</strong> <span
+class="citation" data-cites="lifewiki2021pinwheel">(<a
+href="#ref-lifewiki2021pinwheel" role="doc-biblioref">LifeWiki
+2021b</a>)</span>:</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img
+src="conways-life_files/figure-html5/unnamed-chunk-6-1.gif" /><!-- --></p>
+</div>
+<h2 id="conclusion">Conclusion</h2>
+<p>There are countless more patterns and pattern classes like these. If
+you want to take a deeper look into this automaton, check out the <a
+href="https://conwaylife.com/wiki">LifeWiki</a> which has great
+resources on the topic. For the purposes of this course, this article is
+intended to give you an intuitive notion of the term “emergence”. As you
+saw throughout this article, the simple rules of the Life automaton
+imply amounts of complexity that can fill books and perhaps an entire
+encyclopedia.</p>
+<p>For a very rich collection of resources on Conway’s Life, check out
+<a href="https://conwaylife.com/">this website</a>.</p>
+<h4 id="project-ideas">Project Ideas</h4>
+<p>Implementing Life is not that difficult and a great way for beginners
+to learn programming. Try implementing <em>Life</em> in a programming
+language of your choosing.</p>
+<p>You can also check out the <a
+href="https://github.com/socialdynamicshub/gridabm"><code>gridabm</code>
+R library</a> which contains an implementation of Life<a href="#fn2"
+class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <div id="refs" class="references csl-bib-body hanging-indent"
 role="doc-bibliography">
-<div id="ref-epstein1996growing" class="csl-entry"
+<div id="ref-gardner1970mathematical" class="csl-entry"
 role="doc-biblioentry">
-Epstein, J. M., and R. Axtell. 1996. <em><span class="nocase">Growing
-Artificial Societies: Social Science from the Bottom Up</span></em>.
-Brookings Institution Press.
+Gardner, M. 1970. <span>“<span class="nocase">Mathematical Games: The
+Fantastic Combinations of John Conway’s New Solitaire Game
+"life"</span>.”</span> <em>Scientific American</em> 223 (4): 120–23.
 </div>
-<div id="ref-schelling1971segregation" class="csl-entry"
+<div id="ref-lifewiki2021canadagoose" class="csl-entry"
 role="doc-biblioentry">
-Schelling, Thomas C. 1971. <span>“Dynamic Models of Segregation.”</span>
-<em>The Journal of Mathematical Sociology</em> 1 (2): 143–86. <a
-href="https://doi.org/10.1080/0022250X.1971.9989794">https://doi.org/10.1080/0022250X.1971.9989794</a>.
+LifeWiki. 2021a. <span>“Canada Goose.”</span> <a
+href="https://conwaylife.com/wiki/Canada_goose">https://conwaylife.com/wiki/Canada_goose</a>.
 </div>
-<div id="ref-wilensky1997segretation" class="csl-entry"
+<div id="ref-lifewiki2021pinwheel" class="csl-entry"
 role="doc-biblioentry">
-Wilensky, U. 1997. <span>“NetLogo Segregation Model.”</span> Evanston,
-IL: Center for Connected Learning; Computer-Based Modeling, Northwestern
-University. <a
-href="http://ccl.northwestern.edu/netlogo/models/Segregation">http://ccl.northwestern.edu/netlogo/models/Segregation</a>.
+———. 2021b. <span>“Pinwheel.”</span> <a
+href="https://conwaylife.com/wiki/Pinwheel">https://conwaylife.com/wiki/Pinwheel</a>.
 </div>
-<div id="ref-wilensky1999netlogo" class="csl-entry"
+<div id="ref-lifewiki2022blinker" class="csl-entry"
 role="doc-biblioentry">
-———. 1999. <span>“NetLogo.”</span> Evanston, IL: Center for Connected
-Learning; Computer-Based Modeling, Northwestern University. <a
-href="http://ccl.northwestern.edu/netlogo/">http://ccl.northwestern.edu/netlogo/</a>.
+———. 2022a. <span>“Blinker.”</span> <a
+href="https://conwaylife.com/wiki/Blinker">https://conwaylife.com/wiki/Blinker</a>.
+</div>
+<div id="ref-lifewiki2022oscillator" class="csl-entry"
+role="doc-biblioentry">
+———. 2022b. <span>“Oscillator.”</span> <a
+href="https://conwaylife.com/wiki/Oscillator">https://conwaylife.com/wiki/Oscillator</a>.
+</div>
+<div id="ref-lifewiki2022pulsar" class="csl-entry"
+role="doc-biblioentry">
+———. 2022c. <span>“Pulsar.”</span> <a
+href="https://conwaylife.com/wiki/Pulsar">https://conwaylife.com/wiki/Pulsar</a>.
 </div>
 </div>
 <section class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1" role="doc-endnote"><p>As are all agent-based models, more
-or less <span class="citation" data-cites="epstein1996growing">(<a
-href="#ref-epstein1996growing" role="doc-biblioref">Epstein and Axtell
-1996</a>)</span>.<a href="#fnref1" class="footnote-back"
+<li id="fn1" role="doc-endnote"><p>For instance, check out the <a
+href="https://conwaylife.com/wiki/"><em>LifeWiki</em></a> where many of
+those patterns are documented.<a href="#fnref1" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn2" role="doc-endnote"><p>That applies not only to the model
-environment, but to all components of the model.<a href="#fnref2"
-class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>I.e., blue if an agent is orange and
-vice versa.<a href="#fnref3" class="footnote-back"
-role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>The graphics and animations in this
+article were generated with the <code>gridabm</code> library.<a
+href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 <!--radix_placeholder_article_footer-->
@@ -2340,15 +2349,6 @@ role="doc-backlink">↩︎</a></p></li>
 <div class="d-appendix">
 </div>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->
