@@ -90,9 +90,22 @@ anim <- forest_fire_results %>%
 animate(anim, nframes = 201, renderer = gifski_renderer())
 ```
 
-
 The higher the density of trees, the more quickly and the more completely the fire burns through the forest.
 Of course, this is only a quick visual impression.
 We can quantify these intuitions easily by running the model several times at different levels of tree density respectively.
 
 [TODO: Do numeric analysis]
+
+```{r}
+data <- data.frame()
+for (density in seq(0.1, 0.9, 0.1)) {
+  for (rep in 1:3) {
+    forest <- create_forest(50, density)
+    results <- run_automaton(forest, 100, forest_fire_step)
+    results$density <- density
+    results$rep <- rep
+    data <- bind_rows(data, results)
+  }
+}
+```
+
