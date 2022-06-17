@@ -101,11 +101,39 @@ data <- data.frame()
 for (density in seq(0.1, 0.9, 0.1)) {
   for (rep in 1:3) {
     forest <- create_forest(50, density)
-    results <- run_automaton(forest, 100, forest_fire_step)
+    results <- run_automaton(forest, 200, forest_fire_step)
     results$density <- density
     results$rep <- rep
     data <- bind_rows(data, results)
   }
 }
 ```
+
+
+```{r, fig.width = 8, fig.height=13}
+data %>% 
+  group_by(step, rep, density, state, .drop = FALSE) %>% 
+  summarize(count = n()) %>% 
+  ungroup() %>% 
+  group_by(step, density, state, .drop = FALSE) %>% 
+  summarize(mean_count = mean(count)) %>% 
+  mutate(n_cells = sum(mean_count)) %>% 
+  ungroup() %>% 
+  mutate(mean_fraction = mean_count/n_cells) %>%
+  ggplot(aes(x = step, y = mean_fraction, color = as.factor(state))) +
+  geom_line() + 
+  scale_color_manual(values = theme_forest_fire()) +
+  facet_wrap(. ~ density, ncol = 1) +
+  labs(
+    x = "Step",
+    y = "Fraction per state over 3 replicates"
+  ) +
+  theme(
+    legend.position = "None",
+    panel.background = element_rect(color = "darkgrey", fill = "white"),
+    strip.background = element_rect(fill = "white")
+  )
+    
+```
+
 
