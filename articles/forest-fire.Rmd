@@ -1,77 +1,70 @@
 ---
 title: "Forest Fire"
 output: distill::distill_article
+bibliography: bibliography.bib
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
 library(dplyr)
 library(gganimate)
-source("./helpers/forest_fire.R")
-source("./helpers/grid_plot.R")
+library(gridabm)
 ```
 
-The domains that agent-based modeling can be applied to are various.
-We will demonstrate this by setting a forest on fire.
+Agent-based modeling can be applied in a wide range of domains.
+Although we are focussing on social phenomena in this course, we will have a look at a slightly different example here:
+We will set a forest on fire.
 In a model, of course.
-Here is how.
 
-Take a square grid.
+The model we are looking at was devised by @drossel1992selforganized.
+Like in [Conway's Life](./conways-life.html) and the [Schelling model of segregation](./schelling.html), it operates on a 2D grid graph.
 Each cell has one of four distinct states:
 
-* **white** = The cell is empty
-* **green** = There is a tree on the cell
-* **red** = There is a burning tree on the cell
-* **dark red** = There is a burnt tree on the cell
+* `white` = The cell is empty
+* `green` = There is a tree on the cell
+* `orange` = There is a *burning* tree on the cell
+* `dark red` = There is a *burnt* tree on the cell
 
-To set up the model, we distribute trees (= green cells) over the grid and set a certain number of initial trees on fire.
-The effects of the model are most demonstrative, when we set the first column on fire.
+To set up the model, we distribute trees (= green cells) at a certain predefined density on the grid and set a certain number of initial trees on fire.
+The effects of the model are most illustrative, when we set the first column on fire.
 This means that all trees on the left of the board are on fire.
 
 ```{r}
 forest <- create_forest(50, 0.7)
 
-color_scheme <- c(`0` = "white", `1` = "green", `2` = "red", `3` = "firebrick")
-
-forest %>%
-  board_to_df() %>% 
-  mutate(cell_id = 1:nrow(.)) %>% 
-  grid_plot(2, color_scheme) +
-  labs(caption = "The \"trees\" in red are on fire")
+forest %>% 
+  plot_state(2, theme_forest_fire()) +
+  labs(caption = "The green cells represent trees, the orange ones are trees on fire.")
 ```
 
+The update rule is defined as follows:
 
-In one model step, each burning tree sets all non-burning trees in its **Von Neumann neighborhood** on fire.
-All burning trees burn out (i.e., the become "burnt" or like described above `dark red`).
+> Each burning tree sets all non-burning trees in its [*Von Neumann neighborhood*](./neighborhood-relations.html) on fire.
+> All burning trees "burn out" (i.e., they enter the state "burnt").
 
-One parameter that we can manipulate is the density of trees on the board.
-Let's have a look at an example with a tree density of 0.7:
+In the original model, there are several parameters one can manipulate, but in this article, we focus on one: the density of trees on the board.
+Let's have a look at an example with $density = 0.7$:
 
 ```{r}
-forest_fire_simulation <- forest_fire_game(forest, 200)
+forest_fire_results <- run_automaton(forest, 200, forest_fire_step)
 
-color_scheme <- c(`0` = "white", `1` = "green", `2` = "red", `3` = "firebrick")
-
-anim <- forest_fire_simulation %>% 
-  grid_plot(2, color_scheme) +
-  transition_states(step, transition_length = 1, state_length = 10)
+anim <- forest_fire_results %>% 
+  animate_model_run(2, theme_forest_fire())
 
 animate(anim, nframes = 201, renderer = gifski_renderer())
 ```
 
+As you can see, the model exhibits face validity with regards to our model domain.
+Like we would expect in a real forest fire, we can see that the fire burns through the forest, each burning trees setting the trees in their surrounding on fire.
 
 Now let's look what happens if we manipulate the tree density.
 
 ```{r}
 forest <- create_forest(50, 0.2)
+forest_fire_results <- run_automaton(forest, 200, forest_fire_step)
 
-forest_fire_simulation <- forest_fire_game(forest, 200)
-
-color_scheme <- c(`0` = "white", `1` = "green", `2` = "red", `3` = "firebrick")
-
-anim <- forest_fire_simulation %>% 
-  grid_plot(2, color_scheme) +
-  transition_states(step, transition_length = 1, state_length = 10) +
+anim <- forest_fire_results %>% 
+  animate_model_run(2, theme_forest_fire()) +
   labs(title = "Density = 0.1")
 
 animate(anim, nframes = 201, renderer = gifski_renderer())
@@ -79,14 +72,9 @@ animate(anim, nframes = 201, renderer = gifski_renderer())
 
 ```{r}
 forest <- create_forest(50, 0.5)
-
-forest_fire_simulation <- forest_fire_game(forest, 200)
-
-color_scheme <- c(`0` = "white", `1` = "green", `2` = "red", `3` = "firebrick")
-
-anim <- forest_fire_simulation %>% 
-  grid_plot(2, color_scheme) +
-  transition_states(step, transition_length = 1, state_length = 10) +
+forest_fire_results <- run_automaton(forest, 200, forest_fire_step)
+anim <- forest_fire_results %>% 
+  animate_model_run(2, theme_forest_fire()) +
   labs(title = "Density = 0.5")
 
 animate(anim, nframes = 201, renderer = gifski_renderer())
@@ -94,43 +82,17 @@ animate(anim, nframes = 201, renderer = gifski_renderer())
 
 ```{r}
 forest <- create_forest(50, 0.8)
-
-forest_fire_simulation <- forest_fire_game(forest, 200)
-
-color_scheme <- c(`0` = "white", `1` = "green", `2` = "red", `3` = "firebrick")
-
-anim <- forest_fire_simulation %>% 
-  grid_plot(2, color_scheme) +
-  transition_states(step, transition_length = 1, state_length = 10) +
+forest_fire_results <- run_automaton(forest, 200, forest_fire_step)
+anim <- forest_fire_results %>% 
+  animate_model_run(2, theme_forest_fire()) +
   labs(title = "Density = 0.8")
 
 animate(anim, nframes = 201, renderer = gifski_renderer())
 ```
 
 
+The higher the density of trees, the more quickly and the more completely the fire burns through the forest.
+Of course, this is only a quick visual impression.
+We can quantify these intuitions easily by running the model several times at different levels of tree density respectively.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+[TODO: Do numeric analysis]
