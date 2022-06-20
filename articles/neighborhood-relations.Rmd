@@ -102,14 +102,29 @@ ggnet2(
   g,
   size = c(
     8, 3, 3,
-    15, 8, 8,
+    20, 8, 8,
     3, 3, 3
   ),
-  color = c(
-    "orange", "blue", "blue",
-    "red", "orange", "orange",
-    "blue", "blue", "blue"
-  )
+  node.color = c(
+    "salmon", "grey", "grey",
+    "firebrick", "salmon", "salmon",
+    "grey", "grey", "grey"
+  ),
+  edge.size = c(
+    1, 1, 1.5,    
+    1, 1, 1, 
+    1, 1, 1.5, 
+    1.5, 1, 1, 
+    1, 1, 1
+  ),
+  edge.color = c(
+    "lightgrey", "lightgrey", "salmon",
+    "lightgrey", "lightgrey", "lightgrey",
+    "lightgrey", "lightgrey", "salmon",
+    "salmon", "lightgrey", "lightgrey",
+    "lightgrey", "lightgrey", "lightgrey"
+  ),
+  mode = "kamadakawai"
 ) +
   theme(legend.position = "None")
 ```
