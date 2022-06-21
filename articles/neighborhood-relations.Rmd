@@ -8,6 +8,8 @@ bibliography: bibliography.bib
 knitr::opts_chunk$set(echo = FALSE)
 library(gridabm)
 library(GGally)
+library(network)
+library(sna)
 library(igraph)
 ```
 
@@ -81,57 +83,113 @@ Of course, you can also define neighborhoods with larger distances, for example 
 
 ```{r}
 # Graph neighborhood
-g <- graph_from_literal(
-  1 -- 2,
-  1 -- 3,
-  1 -- 4,
-  1 -- 7,
-  2 -- 3,
-  2 -- 5,
-  2 -- 6,
-  3 -- 6,
-  4 -- 5,
-  4 -- 7,
-  5 -- 6,
-  5 -- 7,
-  6 -- 8,
-  7 -- 9,
-  8 -- 9
-)
+set.seed(42)
+g <- barabasi.game(n = 30, m = 2, start.graph = make_full_graph(5), directed = FALSE)
+self <- which(igraph::degree(g) == max(igraph::degree(g)))
+df <- igraph::as_data_frame(g)
+net <- network(df, directed = FALSE)
+self <- which(sna::degree(net) == max(sna::degree(net)))
+self_neighborhood <- network::get.neighborhood(net, self)
+self_neighborhood_order_2 <- self_neighborhood
+for (sn in self_neighborhood) {
+  self_neighborhood_order_2 <- c(self_neighborhood_order_2, network::get.neighborhood(net, sn))
+}
+self_neighborhood_order_2 <- unique(self_neighborhood_order_2)
+self_neighborhood_order_2 <- self_neighborhood_order_2[!self_neighborhood_order_2 == self]
+
+self_edges_order_2 <- get.edgeIDs(net, self)
+for (sn in self_neighborhood) {
+  self_edges_order_2 <- c(self_edges_order_2, get.edgeIDs(net, sn))
+}
+self_edges_order_2 <- unique(self_edges_order_2)
+
+xy <- gplot.layout.kamadakawai(net, NULL)
+net %v% "x" = xy[, 1]
+net %v% "y" = xy[, 2]
+```
+
+```{r}
+net_1 <- net
+for (v in seq_along(net$val)) {
+  if (v %in% self_neighborhood) {
+    net$val[[v]]$v_color <- "coral"
+    net$val[[v]]$v_size <- 2
+  }
+  else if (v == self) {
+    net$val[[v]]$v_color <- "firebrick"
+    net$val[[v]]$v_size <- 10
+  }
+  else {
+    net$val[[v]]$v_color <- "lightgrey"
+    net$val[[v]]$v_size <- 1
+  }
+}
+
+for (e in valid.eids(net)) {
+  if (e %in% get.edgeIDs(net, self)) {
+    net$mel[[e]]$atl$e_size <- 1.5
+    net$mel[[e]]$atl$e_color <- "coral"
+  }
+  else {
+    net$mel[[e]]$atl$e_size <- 1
+    net$mel[[e]]$atl$e_color <- "lightgrey"
+  }
+}
+
 ggnet2(
-  g,
-  size = c(
-    8, 3, 3,
-    20, 8, 8,
-    3, 3, 3
-  ),
-  node.color = c(
-    "salmon", "grey", "grey",
-    "firebrick", "salmon", "salmon",
-    "grey", "grey", "grey"
-  ),
-  edge.size = c(
-    1, 1, 1.5,    
-    1, 1, 1, 
-    1, 1, 1.5, 
-    1.5, 1, 1, 
-    1, 1, 1
-  ),
-  edge.color = c(
-    "lightgrey", "lightgrey", "salmon",
-    "lightgrey", "lightgrey", "lightgrey",
-    "lightgrey", "lightgrey", "salmon",
-    "salmon", "lightgrey", "lightgrey",
-    "lightgrey", "lightgrey", "lightgrey"
-  ),
-  mode = "kamadakawai"
+  net, 
+  mode = c("x", "y"),
+  edge.alpha = 0.5,
+  color = "v_color",
+  node.size = "v_size",
+  edge.color = "e_color",
+  edge.size = "e_size"
 ) +
   theme(legend.position = "None")
 ```
 
 
+Larger distances work accordingly.
+The neighborhood of order 2 contains all the nodes that are at a distance of 2 from a node.
 
+```{r}
+for (v in seq_along(net$val)) {
+  if (v %in% self_neighborhood_order_2) {
+    net$val[[v]]$v_color <- "coral"
+    net$val[[v]]$v_size <- 2
+  }
+  else if (v == self) {
+    net$val[[v]]$v_color <- "firebrick"
+    net$val[[v]]$v_size <- 10
+  }
+  else {
+    net$val[[v]]$v_color <- "lightgrey"
+    net$val[[v]]$v_size <- 1
+  }
+}
 
+for (e in valid.eids(net)) {
+  if (e %in% self_edges_order_2) {
+    net$mel[[e]]$atl$e_size <- 1.5
+    net$mel[[e]]$atl$e_color <- "coral"
+  }
+  else {
+    net$mel[[e]]$atl$e_size <- 1
+    net$mel[[e]]$atl$e_color <- "lightgrey"
+  }
+}
+
+ggnet2(
+  net, 
+  mode = c("x", "y"),
+  edge.alpha = 0.5,
+  color = "v_color",
+  node.size = "v_size",
+  edge.color = "e_color",
+  edge.size = "e_size"
+) +
+  theme(legend.position = "None")
+```
 
 
 
