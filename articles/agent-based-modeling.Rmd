@@ -9,6 +9,10 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
+So far, we have mostly looked at more abstract models that can be largely classified as cellular automata.
+Building on that, we can now use the vocabulary and repertoire of techniques that we learned to build models of real phenomena.
+In this course, we focus on social phenomena.
+
 **Agent-based modeling (ABM)** is a technique used to model complex emergent phenomena through the simulation of local interactions.
 Crudely speaking, this is what you do to set up an ABM:
 You create a bunch of agents with some defined behavior, put them in an arena, and enjoy the show.
@@ -20,10 +24,11 @@ In general, an ABM consists of three main components [@epstein1996growing]:
 * an environment
 * rules of how agents interact with one another and their environment
 
-They are suited for problems where an emergent phenomenon can be explained by local interactions.
-Usually, in ABMs, we define behavior on an individual level (i.e., agent level), hence ABMs are sometimes also referred to as Individual-Based Models.
-What we want to observe, though, is effects on a "global" level (global with regard to the model).
+If you've followed this course so far, this setup will look familiar to you from what you've learned about cellular automata.
 
+ABMs are suited for problems where an emergent phenomenon can be explained by local interactions.
+Usually, in ABMs, we define behavior on an individual level (i.e., agent level)^[Hence, ABMs are sometimes also referred to as Individual-Based Models.].
+What we want to observe, though, is effects on a "global" level (global with regard to the model).
 This means that ABMs are characterized by a **micro and a macro level**.
 
 It might be easiest to start with a totally artificial example.

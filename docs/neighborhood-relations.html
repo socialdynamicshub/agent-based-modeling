@@ -2066,6 +2066,9 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   <!--/radix_placeholder_distill-->
   <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+  <script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+  <script src="site_libs/d3-4.5.0/d3.min.js"></script>
+  <script src="site_libs/forceNetwork-binding-0.4/forceNetwork.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2116,54 +2119,93 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 <div class="d-article">
 <p>Cellular automata usually operate on lattices and they perform
-<strong>local computations</strong>, meaning that the state of a cell
-depends on the cell’s immediate vicinity and not some global state. This
-means that we need some definitions of what constitutes a neighborhood
-in cellular automata. But the concept of neighborhoods extends to
-agent-based models as well.</p>
-<h3 id="moore-neighborhood">Moore Neighborhood</h3>
-<p>Perhaps the most common neighborhood relation is the <strong>Moore
-neighborhood</strong>. It is used, for instance, in Conway’s
-<em>life</em>.</p>
-<p>The Moore neighborhood is defined on a two-dimensional lattice, or
-simply but, a grid. This is what it looks like:</p>
+<strong>local computations</strong>, meaning the state of a cell depends
+on the cell’s immediate vicinity and not some global state. This means
+that we need some definitions of what constitutes a “vicinity” in
+cellular automata and agent-based models. Most of the time, the term for
+the direct vicinity of a cell or agent is its
+<strong>neighborhood</strong>.</p>
+<p>Neighborhood relations depend on the environment that we choose for
+our model or automaton and our model assumptions. For instance, some
+specific neighborhood types are only defined for grid graphs, but not
+for graphs in general. The ones that we will have a look at here are
+called the <strong>Moore neighborhood</strong>, the <strong>Von Neumann
+neighborhood</strong>, and neighborhoods on graphs in general. We will
+approach neighborhoods only informally, but in enough detail to be
+useful for building agent-based models. However, I’d encourage everyone
+to go into more depth on your own. As you will see, this topic is
+closely linked with the discipline of <em>topology</em>. Some knowledge
+of topology comes in handy when building agent-based models.</p>
+<h2 id="moore-neighborhood">Moore Neighborhood</h2>
+<p>Perhaps the most common neighborhood relation in cellular automata is
+the <strong>Moore neighborhood</strong>. For our checkerboard type
+graphs (square lattices), it looks like this:</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="neighborhood-relations_files/figure-html5/unnamed-chunk-1-1.png" width="624" /></p>
 </div>
-<p>The Moore neighborhood is simply given by the four cells on each side
-of a cell as well as the four cells on each corner of a cell (think
-north, north-east, east, south-east, etc.).</p>
-<p>You might say “Well of course all 8 adjacent cells are the
-neighborhood of a cell! What else could it be?”. Well, there is one
-obvious other way.</p>
-<h3 id="von-neumann-neighborhood">Von Neumann Neighborhood</h3>
-<p>The <strong>Von Neumann neighborhood</strong> is also defined on a
-lattice (although it is more generic and applies not only to
-two-dimensional grids, more on that further down). On a two-dimensional
-lattice, it’s simply the four cells that are adjacent to each side of a
-cell.</p>
+<p>It is simply given by the four cells on each side of a cell as well
+as the four cells on each corner of a cell, as well as the cell itself.
+A convenient way to talk about the adjacent cells in the Moore
+neighborhood of a cell is by referring to them as cardinal and ordinal
+directions (north, north-east, east, south-east, south, south-west,
+west, north-west).</p>
+<p>Another way you can think of the Moore neighborhood is as all squares
+on a chessboard that a king can reach in one move. Here you can see all
+the squares that the king on d5 can reach in one or two moves.</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="neighborhood-relations_files/figure-html5/unnamed-chunk-2-1.png" width="624" /></p>
+<p><img src="neighborhood-relations_files/figure-html5/unnamed-chunk-2-1.png" width="624" style="display: block; margin: auto;" /></p>
+</div>
+<p>This distance metric is called the <strong>Chebyshev
+distance</strong>.</p>
+<p>Once again, we have only covered some informal and basic cases of
+everything here. Square lattices can have higher dimensions and the
+Chebyshev distance is defined many way more complex vector spaces.
+Looking into this topic a bit more deeply and in a more formal way can
+be very helpful later on, but is out of the scope of this course.</p>
+<h2 id="von-neumann-neighborhood">Von Neumann Neighborhood</h2>
+<p>The <strong>Von Neumann neighborhood</strong> is also defined on a
+square lattice. On a two-dimensional lattice, it’s simply the four cells
+that are adjacent to each side of a cell (N, E, S, W).</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="neighborhood-relations_files/figure-html5/unnamed-chunk-3-1.png" width="624" /></p>
 </div>
 <p>The more formal definition, however, is that the Von Neumann
-neighborhood is comprised of the cell in question and all cells within a
-Manhattan distance of 1.</p>
-<h3 id="neighborhoods-in-graphs">Neighborhoods in Graphs</h3>
+neighborhood of a cell is comprised all cells within a <strong>Manhattan
+distance</strong> of 1 as well as the cell itself. The Manhattan
+distance gets its name from the geometric structure of the New York
+district Manhattan. Blocks are organized like a checkerboard and the
+streets cross them accordingly. In contrast to the movement on a
+chessboard, however, you can’t go diagonally on a “Manhattan board”
+because you can’t simply go through or over the houses. Instead, you
+have only four directions at every intersections: N, E, S, and W.</p>
+<p>The Von Neumann neighborhood of with distance <span
+class="math inline">\(r = 2\)</span> is given accordingly:</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="neighborhood-relations_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
+</div>
+<h2 id="neighborhoods-in-graphs">Neighborhoods in Graphs</h2>
 <p>In a graph, the definition for neighborhood is pretty
 straight-forward. In the simplest case, it is just all nodes that are
-connected to a node by an edge. Of course, you can also define
-neighborhoods with larger distances, for example all nodes that are
-within a path distance of 1 of a node.</p>
+connected to a node by an edge.</p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="neighborhood-relations_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
+<p><img src="neighborhood-relations_files/figure-html5/unnamed-chunk-6-1.png" width="624" /></p>
 </div>
 <p>Larger distances work accordingly. The neighborhood of order 2
 contains all the nodes that are at a distance of 2 from a node.</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="neighborhood-relations_files/figure-html5/unnamed-chunk-5-1.png" width="624" /></p>
+<p><img src="neighborhood-relations_files/figure-html5/unnamed-chunk-7-1.png" width="624" /></p>
+</div>
+<h2 id="square-lattices-as-graphs">Square Lattices as Graphs</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div id="htmlwidget-f4f54007e2e6c0b24df2" style="width:768px;height:768px;" class="forceNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f4f54007e2e6c0b24df2">{"x":{"links":{"source":[0,0,11,11,22,22,33,33,44,44,55,55,61,61,62,63,63,1,1,2,2,3,3,4,4,5,5,6,6,7,8,8,9,9,10,10,12,12,13,13,14,14,15,15,16,17,17,18,18,19,19,20,20,21,21,23,23,24,24,25,26,26,27,27,28,28,29,29,30,30,31,31,32,32,34,35,35,36,36,37,37,38,38,39,39,40,40,41,41,42,43,43,45,45,46,46,47,47,48,48,49,49,50,50,51,52,53,54,56,57,58,59],"target":[11,63,22,1,33,2,44,3,55,4,61,5,62,6,7,1,8,2,9,3,10,4,12,5,13,6,14,7,15,16,9,17,10,18,12,19,13,20,14,21,15,23,16,24,25,18,26,19,27,20,28,21,29,23,30,24,31,25,32,34,27,35,28,36,29,37,30,38,31,39,32,40,34,41,42,36,43,37,45,38,46,39,47,40,48,41,49,42,50,51,45,52,46,53,47,54,48,56,49,57,50,58,51,59,60,53,54,56,57,58,59,60],"value":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"colour":["#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666"]},"nodes":{"name":["1","10","11","12","13","14","15","16","17","18","19","2","20","21","22","23","24","25","26","27","28","29","3","30","31","32","33","34","35","36","37","38","39","4","40","41","42","43","44","45","46","47","48","49","5","50","51","52","53","54","55","56","57","58","59","6","60","61","62","63","64","7","8","9"],"group":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"nodesize":[8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8]},"options":{"NodeID":"name","Group":"group","colourScale":"d3.scaleOrdinal(['#3182bd'])","fontSize":7,"fontFamily":"serif","clickTextSize":17.5,"linkDistance":50,"linkWidth":"'1.5px'.toString()","charge":-30,"opacity":0.6,"zoom":false,"legend":false,"arrows":false,"nodesize":true,"radiusCalculation":"d.nodesize","bounded":false,"opacityNoHover":1,"clickAction":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div id="htmlwidget-a49b41b7a26f032863e7" style="width:768px;height:768px;" class="forceNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a49b41b7a26f032863e7">{"x":{"links":{"source":[0,1,12,23,26,27,0,28,0,1,30,12,31,23,2,3,26,27,4,5,28,29,30,6,30,31,8,2,9,3,10,4,11,13,5,14,6,7,8,15,0,8,1,9,17,10,18,12,19,11,23,20,13,26,27,21,14,15,28,22,17,16,29,24],"target":[1,12,23,26,27,28,29,29,30,31,31,2,2,3,3,4,4,5,5,6,6,7,7,7,8,9,9,10,10,11,11,13,13,14,14,15,15,16,16,16,17,17,18,18,18,19,19,19,20,20,20,21,21,21,22,22,22,24,24,24,25,25,25,25],"value":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"colour":["#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666","#666"]},"nodes":{"name":["0","1","10","11","12","13","14","15","16","17","18","19","2","20","21","22","23","24","25","26","27","28","29","3","30","31","4","5","6","7","8","9"],"group":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"nodesize":[8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8]},"options":{"NodeID":"name","Group":"group","colourScale":"d3.scaleOrdinal(['#3182bd'])","fontSize":7,"fontFamily":"serif","clickTextSize":17.5,"linkDistance":50,"linkWidth":"'1.5px'.toString()","charge":-30,"opacity":0.6,"zoom":false,"legend":false,"arrows":false,"nodesize":true,"radiusCalculation":"d.nodesize","bounded":false,"opacityNoHover":1,"clickAction":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
@@ -2174,6 +2216,15 @@ class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"><
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->

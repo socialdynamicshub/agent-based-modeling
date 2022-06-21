@@ -11,19 +11,28 @@ library(GGally)
 library(network)
 library(sna)
 library(igraph)
+library(rchess)
+library(dplyr)
+library(tidyr)
 ```
 
-Cellular automata usually operate on lattices and they perform **local computations**, meaning that the state of a cell depends on the cell's immediate vicinity and not some global state.
-This means that we need some definitions of what constitutes a neighborhood in cellular automata.
-But the concept of neighborhoods extends to agent-based models as well.
+Cellular automata usually operate on lattices and they perform **local computations**, meaning the state of a cell depends on the cell's immediate vicinity and not some global state.
+This means that we need some definitions of what constitutes a "vicinity" in cellular automata and agent-based models.
+Most of the time, the term for the direct vicinity of a cell or agent is its **neighborhood**.
 
-### Moore Neighborhood
+Neighborhood relations depend on the environment that we choose for our model or automaton and our model assumptions.
+For instance, some specific neighborhood types are only defined for grid graphs, but not for graphs in general.
+The ones that we will have a look at here are called the **Moore neighborhood**, the **Von Neumann neighborhood**, and neighborhoods on graphs in general.
+We will approach neighborhoods only informally, but in enough detail to be useful for building agent-based models.
+However, I'd encourage everyone to go into more depth on your own.
+As you will see, this topic is closely linked with the discipline of *topology*.
+Some knowledge of topology comes in handy when building agent-based models.
 
-Perhaps the most common neighborhood relation is the **Moore neighborhood**.
-It is used, for instance, in Conway's *life*.
 
-The Moore neighborhood is defined on a two-dimensional lattice, or simply but, a grid.
-This is what it looks like:
+## Moore Neighborhood
+
+Perhaps the most common neighborhood relation in cellular automata is the **Moore neighborhood**.
+For our checkerboard type graphs (square lattices), it looks like this:
 
 ```{r}
 moore <- t(
@@ -44,15 +53,43 @@ moore %>% plot_state(17, c(`0` = "white", `1` = "grey80", `2` = "grey20"))
 ```
 
 
-The Moore neighborhood is simply given by the four cells on each side of a cell as well as the four cells on each corner of a cell (think north, north-east, east, south-east, etc.).
+It is simply given by the four cells on each side of a cell as well as the four cells on each corner of a cell, as well as the cell itself.
+A convenient way to talk about the adjacent cells in the Moore neighborhood of a cell is by referring to them as cardinal and ordinal directions (north, north-east, east, south-east, south, south-west, west, north-west).
 
-You might say "Well of course all 8 adjacent cells are the neighborhood of a cell! What else could it be?".
-Well, there is one obvious other way.
+Another way you can think of the Moore neighborhood is as all squares on a chessboard that a king can reach in one move.
+Here you can see all the squares that the king on d5 can reach in one or two moves.
 
-### Von Neumann Neighborhood
+```{r,fig.align='center', fig.show=TRUE, results='hide'}
+fen <- "8/8/8/3K4/8/8/8/8 w - - 0 1"
+chss <- Chess$new()
+chss$load(fen)
+ggchessboard(chss$fen()) +
+  annotate("text", x = 3:5, y = 6, label = "1", size = 7) +
+  annotate("text", x = seq(3, 5, 2), y = 5, label = "1", size = 7) +
+  annotate("text", x = 3:5, y = 4, label = "1", size = 7) +
+  annotate("text", x = 2:6, y = 7, label = "2", size = 7) +
+  annotate("text", x = seq(2, 6, 4), y = 4, label = "2", size = 7) +
+  annotate("text", x = seq(2, 6, 4), y = 5, label = "2", size = 7) +
+  annotate("text", x = seq(2, 6, 4), y = 6, label = "2", size = 7) +
+  annotate("text", x = 2:6, y = 3, label = "2", size = 7) +
+  theme(
+    axis.title = element_blank(),
+    axis.ticks = element_blank()
+  )
+```
 
-The **Von Neumann neighborhood** is also defined on a lattice (although it is more generic and applies not only to two-dimensional grids, more on that further down).
-On a two-dimensional lattice, it's simply the four cells that are adjacent to each side of a cell.
+This distance metric is called the **Chebyshev distance**.
+
+Once again, we have only covered some informal and basic cases of everything here.
+Square lattices can have higher dimensions and the Chebyshev distance is defined many way more complex vector spaces.
+Looking into this topic a bit more deeply and in a more formal way can be very helpful later on, but is out of the scope of this course.
+
+
+
+## Von Neumann Neighborhood
+
+The **Von Neumann neighborhood** is also defined on a square lattice.
+On a two-dimensional lattice, it's simply the four cells that are adjacent to each side of a cell (N, E, S, W).
 
 ```{r}
 vonneumann <- t(
@@ -72,14 +109,38 @@ vonneumann <- t(
 vonneumann %>% plot_state(17, c(`0` = "white", `1` = "grey80", `2` = "grey20"))
 ```
 
-The more formal definition, however, is that the Von Neumann neighborhood is comprised of the cell in question and all cells within a Manhattan distance of 1.
+The more formal definition, however, is that the Von Neumann neighborhood of a cell is comprised all cells within a **Manhattan distance** of 1 as well as the cell itself.
+The Manhattan distance gets its name from the geometric structure of the New York district Manhattan.
+Blocks are organized like a checkerboard and the streets cross them accordingly.
+In contrast to the movement on a chessboard, however, you can't go diagonally on a "Manhattan board" because you can't simply go through or over the houses.
+Instead, you have only four directions at every intersections: N, E, S, and W.
+
+The Von Neumann neighborhood of with distance $r = 2$ is given accordingly:
+
+```{r}
+vonneumann <- t(
+  matrix(
+    c(
+      c(0, 0, 0, 0, 0, 0, 0),
+      c(0, 0, 0, 1, 0, 0, 0),
+      c(0, 0, 1, 1, 1, 0, 0),
+      c(0, 1, 1, 2, 1, 1, 0),
+      c(0, 0, 1, 1, 1, 0, 0),
+      c(0, 0, 0, 1, 0, 0, 0),
+      c(0, 0, 0, 0, 0, 0, 0)
+    ),
+    nrow = 7
+  )
+)
+vonneumann %>% plot_state(17, c(`0` = "white", `1` = "grey80", `2` = "grey20"))
+```
 
 
-### Neighborhoods in Graphs
+
+## Neighborhoods in Graphs
 
 In a graph, the definition for neighborhood is pretty straight-forward.
 In the simplest case, it is just all nodes that are connected to a node by an edge.
-Of course, you can also define neighborhoods with larger distances, for example all nodes that are within a path distance of 1 of a node.
 
 ```{r}
 # Graph neighborhood
@@ -198,4 +259,18 @@ ggnet2(
 
 
 
+## Square Lattices as Graphs
 
+```{r, fig.width=8, fig.height=8}
+make_lattice(dimvector = c(8, 8)) %>% 
+  igraph::as_data_frame() %>% 
+  rename(source = from, target = to) %>% 
+  networkD3::simpleNetwork()
+```
+
+```{r, fig.width=8, fig.height=8}
+make_lattice(c(8, 4), circular = TRUE) %>%
+  networkD3::igraph_to_networkD3() %>%
+  data.frame() %>%
+  networkD3::simpleNetwork()
+```
